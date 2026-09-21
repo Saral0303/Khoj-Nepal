@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('khoj_theme') || 'light';
+        var bg = t === 'dark' ? '#18191A' : '#F2F3F5';
+        document.documentElement.setAttribute('data-theme', t);
+        document.documentElement.style.colorScheme = t === 'dark' ? 'dark' : 'light';
+        document.documentElement.style.backgroundColor = bg;
+        var s = document.createElement('style');
+        s.id = 'khoj-theme-boot';
+        s.textContent = 'html,body{background-color:' + bg + '!important;}';
+        document.documentElement.appendChild(s);
+      } catch (e) {
+        document.documentElement.setAttribute('data-theme', 'light');
+        document.documentElement.style.backgroundColor = '#F2F3F5';
+      }
+    })();
+  </script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings - Khoj Nepal</title>
+  <link rel="icon" href="/assets/logo.png" type="image/png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <nav class="top-nav" id="top-nav"></nav>
+  <div class="app-layout">
+    <main class="main-content" style="grid-column:1/-1">
+      <div class="settings-container">
+        <div class="page-header">
+          <h1 data-i18n="settings">Settings</h1>
+        </div>
+
+        <div class="settings-section">
+          <h3 data-i18n="account">Account</h3>
+          <div class="settings-group">
+            <a href="profile.html" class="settings-row"><span data-i18n="viewYourProfile">View Profile</span><span class="chevron">�</span></a>
+            <a href="edit-profile.html" class="settings-row"><span data-i18n="editProfile">Edit Profile</span><span class="chevron">�</span></a>
+            <a href="change-password.html" class="settings-row"><span data-i18n="changePassword">Change Password</span><span class="chevron">�</span></a>
+          </div>
+        </div>
+
+        <div class="settings-section">
+          <h3 data-i18n="preferences">Preferences</h3>
+          <div class="settings-group">
+            <div class="settings-row settings-lang-row">
+              <span class="settings-lang-main">
+                <span id="settings-lang-label">Language: English</span>
+              </span>
+              <div class="theme-toggle-group">
+                <button class="theme-btn" id="set-lang-en" type="button">English</button>
+                <button class="theme-btn" id="set-lang-ne" type="button">??????</button>
+              </div>
+            </div>
+            <div class="settings-row">
+              <span data-i18n="appearance">Appearance</span>
+              <div class="theme-toggle-group">
+                <button class="theme-btn" id="set-light" onclick="setTheme('light')">? <span data-i18n="lightMode">Light</span></button>
+                <button class="theme-btn" id="set-dark" onclick="setTheme('dark')">?? <span data-i18n="darkMode">Dark</span></button>
+              </div>
+            </div>
+            <a href="notifications.html" class="settings-row"><span data-i18n="notifications">Notifications</span><span class="chevron">�</span></a>
+          </div>
+        </div>
+
+        <div class="settings-section">
+          <h3 data-i18n="history">History</h3>
+          <div class="settings-group">
+            <a href="activity.html" class="settings-row"><span data-i18n="history">History</span><span class="chevron">�</span></a>
+            <a href="activity.html#my-lost-posts" class="settings-row"><span data-i18n="myPosts">My Posts</span><span class="chevron">�</span></a>
+            <a href="activity.html#my-claims-list" class="settings-row"><span data-i18n="myClaims">My Claims</span><span class="chevron">�</span></a>
+            <a href="office.html" class="settings-row"><span data-i18n="officeInfo">Admin Office</span><span class="chevron">�</span></a>
+          </div>
+        </div>
+
+        <div class="settings-section">
+          <h3 data-i18n="privacySecurity">Privacy & Security</h3>
+          <div class="settings-group">
+            <div class="settings-row" id="kyc-status-row">
+              <span data-i18n="kycVerification">KYC Verification</span>
+              <span id="kyc-status-badge"></span>
+            </div>
+            <a href="kyc.html" class="settings-row"><span data-i18n="kycInfoTitle">Identity & Ownership Verification</span><span class="chevron">�</span></a>
+            <a href="help.html#kyc-help" class="settings-row"><span data-i18n="kycPrivacyInfo">KYC Privacy Information</span><span class="chevron">�</span></a>
+          </div>
+          <p class="form-note" style="margin-top:8px" data-i18n="trustKyc">?? Your KYC documents are private.</p>
+          <p class="form-note" data-i18n="trustRetention">?? Recovered records are retained temporarily for investigation.</p>
+        </div>
+
+        <div class="settings-section">
+          <h3 data-i18n="support">Support</h3>
+          <div class="settings-group">
+            <a href="help.html" class="settings-row"><span data-i18n="helpCenter">Help Center</span><span class="chevron">�</span></a>
+            <a href="help.html#report-problem" class="settings-row"><span data-i18n="reportProblem">Report a Problem</span><span class="chevron">�</span></a>
+            <a href="how-it-works.html" class="settings-row"><span data-i18n="howItWorks">How Khoj Nepal Works</span><span class="chevron">�</span></a>
+            <a href="help.html#kyc-help" class="settings-row"><span data-i18n="kycHelpTitle">KYC & Identity Verification</span><span class="chevron">�</span></a>
+          </div>
+        </div>
+
+        <a href="admin/login.html" class="btn btn-secondary btn-block mt-16" data-i18n="adminLogin">Admin Login</a>
+      </div>
+    </main>
+  </div>
+  <nav class="bottom-nav" id="bottom-nav"></nav>
+  <script defer src="/js/mock-data.js"></script>
+  <script defer src="/js/language.js"></script>
+  <script defer src="/js/theme.js"></script>
+  <script defer src="/js/auth.js"></script>
+  <script defer src="/js/app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      initApp('settings');
+      document.getElementById('settings-lang-label').textContent = t('language') + ': ' + (getLang() === 'ne' ? t('nepali') : t('english'));
+      document.getElementById('set-lang-en').classList.toggle('active', getLang() === 'en');
+      document.getElementById('set-lang-ne').classList.toggle('active', getLang() === 'ne');
+      document.getElementById('set-light').classList.toggle('active', getTheme() === 'light');
+      document.getElementById('set-dark').classList.toggle('active', getTheme() === 'dark');
+      document.getElementById('set-lang-en').addEventListener('click', function () { applyLanguage('en'); location.reload(); });
+      document.getElementById('set-lang-ne').addEventListener('click', function () { applyLanguage('ne'); location.reload(); });
+      (function () {
+        var user = typeof getCurrentUser === 'function' ? getCurrentUser() : null;
+        if (!user) return;
+        var status = user.kycStatus || 'none';
+        var colors = { none: '#6b7280', pending: '#f59e0b', verified: '#10b981', rejected: '#ef4444' };
+        var labels = { none: 'Not Completed', pending: 'Under Review', verified: 'Verified', rejected: 'Rejected' };
+        if (getLang() === 'ne') {
+          labels = { none: '???? ???', pending: '?????????', verified: '????????', rejected: '????????' };
+        }
+        var badge = document.getElementById('kyc-status-badge');
+        if (badge) {
+          badge.innerHTML = '<span class="badge" style="background:' + (colors[status] || colors.none) + ';color:#fff;padding:3px 10px;border-radius:10px;font-size:13px">' + (labels[status] || status) + '</span>';
+        }
+      })();
+    });
+  </script>
+</body>
+</html>

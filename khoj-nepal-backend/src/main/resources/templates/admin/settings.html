@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('khoj_theme') || 'light';
+        var bg = t === 'dark' ? '#18191A' : '#F2F3F5';
+        document.documentElement.setAttribute('data-theme', t);
+        document.documentElement.style.colorScheme = t === 'dark' ? 'dark' : 'light';
+        document.documentElement.style.backgroundColor = bg;
+        var s = document.createElement('style');
+        s.id = 'khoj-theme-boot';
+        s.textContent = 'html,body{background-color:' + bg + '!important;}';
+        document.documentElement.appendChild(s);
+      } catch (e) {
+        document.documentElement.setAttribute('data-theme', 'light');
+        document.documentElement.style.backgroundColor = '#F2F3F5';
+      }
+    })();
+  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Settings - Khoj Nepal</title>
+  <link rel="icon" href="/assets/logo.png" type="image/png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="admin-layout">
+    <aside class="admin-sidebar" id="admin-sidebar"></aside>
+    <main class="admin-main">
+      <div class="admin-mobile-nav" id="admin-mobile-nav"></div>
+      <div class="admin-header">
+        <h1 data-i18n="adminSettings">Admin Settings</h1>
+        <p class="form-note" data-i18n="adminSettingsHint">Frontend preferences only. Security and office config will use the Java backend later.</p>
+      </div>
+
+      <div class="admin-table-card">
+        <h3 data-i18n="adminProfile">Admin Profile</h3>
+        <div id="admin-settings-profile" class="detail-info"></div>
+      </div>
+
+      <div class="admin-table-card">
+        <h3 data-i18n="preferences">Preferences</h3>
+        <div class="theme-toggle-group" style="margin:12px 0">
+          <button type="button" class="theme-btn" id="admin-theme-light" data-i18n="lightMode">Light Mode</button>
+          <button type="button" class="theme-btn" id="admin-theme-dark" data-i18n="darkMode">Dark Mode</button>
+        </div>
+        <div class="theme-toggle-group" style="margin:12px 0">
+          <button type="button" class="theme-btn" id="admin-lang-en">English</button>
+          <button type="button" class="theme-btn" id="admin-lang-ne">??????</button>
+        </div>
+      </div>
+
+      <div class="admin-table-card">
+        <h3 data-i18n="systemPreferences">System Preferences (demo)</h3>
+        <div class="detail-row"><strong data-i18n="claimWaitingLabel">Claim waiting period</strong>: 7 days</div>
+        <div class="detail-row"><strong data-i18n="retentionLabel">Recovered retention</strong>: 14 days</div>
+        <div class="detail-row"><strong data-i18n="finderRewardLabel">Finder reward</strong>: 100 Khoj Points</div>
+        <p class="form-note mt-16" data-i18n="adminDemoCreds">Demo: admin@khojnepal.com / Admin@123</p>
+      </div>
+    </main>
+  </div>
+  <script defer src="/js/mock-data.js"></script>
+  <script defer src="/js/language.js"></script>
+  <script defer src="/js/theme.js"></script>
+  <script defer src="/js/auth.js"></script>
+  <script defer src="/js/admin.js"></script>
+  <script>document.addEventListener('DOMContentLoaded', function() { renderAdminSettings(); });</script>
+</body>
+</html>

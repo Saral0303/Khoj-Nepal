@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('khoj_theme') || 'light';
+        var bg = t === 'dark' ? '#18191A' : '#F2F3F5';
+        document.documentElement.setAttribute('data-theme', t);
+        document.documentElement.style.colorScheme = t === 'dark' ? 'dark' : 'light';
+        document.documentElement.style.backgroundColor = bg;
+        var s = document.createElement('style');
+        s.id = 'khoj-theme-boot';
+        s.textContent = 'html,body{background-color:' + bg + '!important;}';
+        document.documentElement.appendChild(s);
+      } catch (e) {
+        document.documentElement.setAttribute('data-theme', 'light');
+        document.documentElement.style.backgroundColor = '#F2F3F5';
+      }
+    })();
+  </script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reports - Khoj Nepal Admin</title>
+  <link rel="icon" href="/assets/logo.png" type="image/png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="admin-layout">
+    <aside class="admin-sidebar" id="admin-sidebar"></aside>
+    <main class="admin-main">
+      <div class="admin-mobile-nav" id="admin-mobile-nav"></div>
+      <div class="admin-header"><h1 data-i18n="adminReports">Reports</h1></div>
+      <div class="admin-stats">
+        <div class="admin-stat-card"><div class="count" id="r-lost">0</div><div class="label" data-i18n="adminLostItems">Lost Items</div></div>
+        <div class="admin-stat-card"><div class="count" id="r-found">0</div><div class="label" data-i18n="adminFoundItems">Found Items</div></div>
+        <div class="admin-stat-card"><div class="count" id="r-delivered">0</div><div class="label" data-i18n="adminRecovered">Recovered</div></div>
+        <div class="admin-stat-card"><div class="count" id="r-suspicious">0</div><div class="label" data-i18n="adminSuspicious">Suspicious</div></div>
+      </div>
+      <div class="admin-table-card">
+        <p class="form-note" data-i18n="adminReportsDemoNote">Frontend summary only � live reports will come from the Java backend later.</p>
+      </div>
+      <div class="admin-table-card">
+        <h3 data-i18n="adminOpenReports">Open Reviews</h3>
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th data-i18n="tableReportId">ID</th><th data-i18n="tableType">Type</th><th data-i18n="tableRelated">Related</th><th data-i18n="tableUser">User</th><th data-i18n="tableDate">Date</th><th data-i18n="tableStatus">Status</th><th></th>
+            </tr>
+          </thead>
+          <tbody id="admin-reports-body"></tbody>
+        </table>
+      </div>
+    </main>
+  </div>
+  <script defer src="/js/mock-data.js"></script>
+  <script defer src="/js/language.js"></script>
+  <script defer src="/js/theme.js"></script>
+  <script defer src="/js/auth.js"></script>
+  <script defer src="/js/admin.js"></script>
+  <script>document.addEventListener('DOMContentLoaded', function() { renderAdminReportsDeep(); });</script>
+</body>
+</html>

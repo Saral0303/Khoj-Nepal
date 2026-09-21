@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('khoj_theme') || 'light';
+        var bg = t === 'dark' ? '#18191A' : '#F2F3F5';
+        document.documentElement.setAttribute('data-theme', t);
+        document.documentElement.style.colorScheme = t === 'dark' ? 'dark' : 'light';
+        document.documentElement.style.backgroundColor = bg;
+        var s = document.createElement('style');
+        s.id = 'khoj-theme-boot';
+        s.textContent = 'html,body{background-color:' + bg + '!important;}';
+        document.documentElement.appendChild(s);
+      } catch (e) {
+        document.documentElement.setAttribute('data-theme', 'light');
+        document.documentElement.style.backgroundColor = '#F2F3F5';
+      }
+    })();
+  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Login - Khoj Nepal</title>
+  <link rel="icon" href="/assets/logo.png" type="image/png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="auth-page admin-auth-page">
+    <div class="auth-container">
+      <div class="auth-brand admin-auth-brand">
+        <img src="/assets/logo.png" alt="Khoj Nepal" class="logo-main">
+        <h1><span style="color:#fff">Khoj</span> <span class="brand-nepal">Admin</span></h1>
+        <p class="tagline" data-i18n="adminPortalTagline">System control panel for Khoj Nepal.</p>
+        <p class="nepali-name">??????? ??????</p>
+      </div>
+      <div class="auth-form-side">
+        <h2 data-i18n="adminLogin">Admin Login</h2>
+        <p class="form-note mb-16" data-i18n="adminLoginHint">Separate from community accounts. Only authorized admins can manage posts, claims, and KYC.</p>
+        <form id="admin-login-form" novalidate>
+          <div class="form-group">
+            <label data-i18n="emailOrMobile">Email or Mobile Number</label>
+            <input type="text" class="form-input" id="admin-identifier" autocomplete="username" value="admin@khojnepal.com">
+          </div>
+          <div class="form-group">
+            <label data-i18n="password">Password</label>
+            <div class="password-field">
+              <input type="password" class="form-input" id="admin-password" autocomplete="current-password">
+              <button type="button" class="password-toggle" data-target="admin-password">Show</button>
+            </div>
+          </div>
+          <div id="admin-login-error" class="form-error-box" style="display:none"></div>
+          <button type="submit" class="btn btn-primary btn-block" data-i18n="adminSignIn">Sign in as Admin</button>
+        </form>
+        <p class="auth-footer"><a href="../login.html" data-i18n="backToUserLogin">? Community Sign In</a></p>
+        <p class="auth-footer"><a href="../signup.html" data-i18n="createAccount">Create New Account</a></p>
+      </div>
+    </div>
+  </div>
+  <script defer src="/js/mock-data.js"></script>
+  <script defer src="/js/language.js"></script>
+  <script defer src="/js/theme.js"></script>
+  <script defer src="/js/auth.js"></script>
+  <script defer src="/js/admin.js"></script>
+  <script>document.addEventListener('DOMContentLoaded', function() { initAdminLoginForm(); });</script>
+</body>
+</html>

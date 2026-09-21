@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('khoj_theme') || 'light';
+        var bg = t === 'dark' ? '#18191A' : '#F2F3F5';
+        document.documentElement.setAttribute('data-theme', t);
+        document.documentElement.style.colorScheme = t === 'dark' ? 'dark' : 'light';
+        document.documentElement.style.backgroundColor = bg;
+        var s = document.createElement('style');
+        s.id = 'khoj-theme-boot';
+        s.textContent = 'html,body{background-color:' + bg + '!important;}';
+        document.documentElement.appendChild(s);
+      } catch (e) {
+        document.documentElement.setAttribute('data-theme', 'light');
+        document.documentElement.style.backgroundColor = '#F2F3F5';
+      }
+    })();
+  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit Post - Khoj Nepal</title>
+  <link rel="icon" href="/assets/logo.png" type="image/png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <nav class="top-nav" id="top-nav"></nav>
+  <div class="app-layout">
+    <aside class="sidebar-left" id="sidebar-left"></aside>
+    <main class="main-content">
+      <div class="page-header">
+        <h1 data-i18n="editPost">Edit Post</h1>
+        <p class="form-note" data-i18n="editPostHint">Update the details of your Lost or Found post.</p>
+      </div>
+      <div class="post-form-container" id="edit-post-wrap">
+        <div id="edit-post-error" class="form-error-box" style="display:none"></div>
+        <form id="edit-post-form" novalidate>
+          <input type="hidden" id="edit-post-id">
+          <div class="form-group">
+            <label data-i18n="itemName">Item Name</label>
+            <input type="text" class="form-input" id="edit-title" required>
+          </div>
+          <div class="form-group">
+            <label data-i18n="category">Category</label>
+            <select class="form-select" id="category-select" required></select>
+          </div>
+          <div class="form-group">
+            <label data-i18n="subcategory">Subcategory</label>
+            <select class="form-select" id="subcategory-select" required></select>
+          </div>
+          <div class="form-group">
+            <label data-i18n="description">Description</label>
+            <textarea class="form-textarea" id="edit-description" required></textarea>
+          </div>
+          <div class="form-group">
+            <label id="location-label" data-i18n="locationLost">Location Lost</label>
+            <input type="text" class="form-input" id="edit-location" required>
+          </div>
+          <div class="form-group">
+            <label id="date-label" data-i18n="dateLost">Date Lost</label>
+            <input type="date" class="form-input" id="edit-date" required>
+          </div>
+          <div class="form-group">
+            <label><span data-i18n="uploadImage">Upload Image</span> <span id="img-required" class="form-required" style="display:none">*</span></label>
+            <div class="image-upload-area" onclick="document.getElementById('item-image').click()">
+              <p>?? <span data-i18n="changePhoto">Change photo</span></p>
+            </div>
+            <input type="file" id="item-image" accept="image/*" style="display:none">
+            <div id="image-preview"></div>
+            <p class="form-note" id="photo-note" style="display:none" data-i18n="photoRequiredNote">A photo is required for Found Item posts.</p>
+          </div>
+          <button type="submit" class="btn btn-primary btn-block" data-i18n="saveChanges">Save Changes</button>
+          <a href="activity.html" class="btn btn-ghost btn-block mt-16" id="edit-cancel" data-i18n="cancel">Cancel</a>
+        </form>
+      </div>
+    </main>
+    <aside class="sidebar-right" id="sidebar-right"></aside>
+  </div>
+  <nav class="bottom-nav" id="bottom-nav"></nav>
+  <script defer src="/js/mock-data.js"></script>
+  <script defer src="/js/language.js"></script>
+  <script defer src="/js/theme.js"></script>
+  <script defer src="/js/auth.js"></script>
+  <script defer src="/js/app.js"></script>
+  <script>document.addEventListener("DOMContentLoaded",function(){initApp('edit-post');});</script>
+</body>
+</html>

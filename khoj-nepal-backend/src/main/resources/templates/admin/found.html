@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('khoj_theme') || 'light';
+        var bg = t === 'dark' ? '#18191A' : '#F2F3F5';
+        document.documentElement.setAttribute('data-theme', t);
+        document.documentElement.style.colorScheme = t === 'dark' ? 'dark' : 'light';
+        document.documentElement.style.backgroundColor = bg;
+        var s = document.createElement('style');
+        s.id = 'khoj-theme-boot';
+        s.textContent = 'html,body{background-color:' + bg + '!important;}';
+        document.documentElement.appendChild(s);
+      } catch (e) {
+        document.documentElement.setAttribute('data-theme', 'light');
+        document.documentElement.style.backgroundColor = '#F2F3F5';
+      }
+    })();
+  </script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Found Items - Khoj Nepal Admin</title>
+  <link rel="icon" href="/assets/logo.png" type="image/png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="admin-layout">
+    <aside class="admin-sidebar" id="admin-sidebar"></aside>
+    <main class="admin-main">
+      <div class="admin-mobile-nav" id="admin-mobile-nav"></div>
+      <div class="admin-header">
+        <h1 data-i18n="adminFoundItems">Found Items</h1>
+        <div style="display:flex;align-items:center;gap:12px">
+          <div style="position:relative">
+            <select id="status-filter" style="appearance:none;-webkit-appearance:none;background:var(--card-bg,#1e1f22);color:var(--text-primary,#e5e7eb);border:1px solid var(--border-color,rgba(255,255,255,0.08));padding:8px 36px 8px 14px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;outline:none;min-width:160px;background-image:url(&quot;data:image/svg+xml,%3Csvg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;12&quot; height=&quot;12&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;%239ca3af&quot; stroke-width=&quot;2&quot;%3E%3Cpath d=&quot;M6 9l6 6 6-6&quot;/&gt;%3C/svg%3E&quot;);background-repeat:no-repeat;background-position:right 12px center">
+              <option value="all">All Statuses</option>
+              <option value="active">Active</option>
+              <option value="claim_pending">Claim Pending</option>
+              <option value="delivered">Delivered</option>
+              <option value="owner_found">Owner Found</option>
+              <option value="received_by_admin">Received by Admin</option>
+              <option value="suspicious">Suspicious</option>
+              <option value="pending">Pending</option>
+              <option value="rejected">Rejected</option>
+            </select>
+          </div>
+          <span id="post-count" style="font-size:13px;color:var(--text-secondary,#9ca3af)"></span>
+        </div>
+      </div>
+      <div class="admin-table-card">
+        <table class="admin-table" id="admin-found-table">
+          <thead><tr><th>Item</th><th>Finder</th><th>Location</th><th data-i18n="investigationStatus">Status</th><th></th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </main>
+  </div>
+  <script defer src="/js/mock-data.js"></script>
+  <script defer src="/js/language.js"></script>
+  <script defer src="/js/theme.js"></script>
+  <script defer src="/js/auth.js"></script>
+  <script defer src="/js/admin.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      if (!initAdminPage('found.html')) { /* redirected */ }
+      else {
+        var allRows = (typeof getAllUserPosts === 'function' ? getAllUserPosts() : []).filter(function(p) { return p.type === 'found'; })
+          .concat(getPostsByType('found'));
+
+        var statusColors = {
+          active: '#10b981', pending: '#f59e0b', rejected: '#ef4444',
+          delivered: '#3b82f6', owner_found: '#8b5cf6', claim_pending: '#f97316',
+          suspicious: '#ef4444', received_by_admin: '#6366f1'
+        };
+
+        function renderTable(filter) {
+          var filtered = filter === 'all' ? allRows : allRows.filter(function(p) { return p.status === filter; });
+          var tbody = document.querySelector('#admin-found-table tbody');
+          tbody.innerHTML = filtered.map(function(p) {
+            var color = statusColors[p.status] || '#6b7280';
+            var label = (p.status || '').replace(/_/g, ' ').replace(/\b\w/g, function(c) { return c.toUpperCase(); });
+            return '<tr>' +
+              '<td style="font-weight:500">' + (p.title || '') + '</td>' +
+              '<td>' + (p.userName || '') + '</td>' +
+              '<td>' + (p.location || '') + '</td>' +
+              '<td><span style="display:inline-flex;align-items:center;gap:5px;background:' + color + ';color:#fff;padding:3px 10px;border-radius:6px;font-size:12px;font-weight:600"><span style="width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,0.5)"></span>' + label + '</span></td>' +
+              '<td><a class="btn btn-sm btn-secondary" href="post-detail.html?id=' + p.id + '">View</a></td>' +
+            '</tr>';
+          }).join('') || '<tr><td colspan="5" style="text-align:center;padding:24px;color:var(--text-secondary,#9ca3af)">No found items match this filter</td></tr>';
+          document.getElementById('post-count').textContent = filtered.length + ' item' + (filtered.length !== 1 ? 's' : '');
+        }
+
+        renderTable('all');
+        document.getElementById('status-filter').addEventListener('change', function () {
+          renderTable(this.value);
+        });
+      }
+    });
+  </script>
+</body>
+</html>

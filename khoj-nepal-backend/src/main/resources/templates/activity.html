@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('khoj_theme') || 'light';
+        var bg = t === 'dark' ? '#18191A' : '#F2F3F5';
+        document.documentElement.setAttribute('data-theme', t);
+        document.documentElement.style.colorScheme = t === 'dark' ? 'dark' : 'light';
+        document.documentElement.style.backgroundColor = bg;
+        var s = document.createElement('style');
+        s.id = 'khoj-theme-boot';
+        s.textContent = 'html,body{background-color:' + bg + '!important;}';
+        document.documentElement.appendChild(s);
+      } catch (e) {
+        document.documentElement.setAttribute('data-theme', 'light');
+        document.documentElement.style.backgroundColor = '#F2F3F5';
+      }
+    })();
+  </script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>History - Khoj Nepal</title>
+  <link rel="icon" href="/assets/logo.png" type="image/png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <nav class="top-nav" id="top-nav"></nav>
+  <div class="app-layout">
+    <main class="main-content" style="grid-column:1/-1;max-width:680px;margin:0 auto">
+      <div class="page-header">
+        <h1 data-i18n="history">History</h1>
+        <p class="form-note" data-i18n="historyHint">Your posts, claims, recovered items, and other activities will appear here.</p>
+      </div>
+
+      <h4 class="section-title"><span class="type-badge type-lost" id="history-lost-icon"></span> <span data-i18n="lostItems">Lost Items</span></h4>
+      <div id="my-lost-posts"></div>
+
+      <h4 class="section-title mt-16"><span class="type-badge type-found" id="history-found-icon"></span> <span data-i18n="foundItems">Found Items</span></h4>
+      <div id="my-found-posts"></div>
+
+      <h4 class="section-title mt-16">? <span data-i18n="recovered">Recovered Items</span></h4>
+      <div id="my-recovered-posts"></div>
+
+      <h4 class="section-title mt-16">?? <span data-i18n="myClaims">My Claims</span></h4>
+      <div id="my-claims-list"></div>
+
+      <h4 class="section-title mt-16" data-i18n="recentActivity">Recent Activity</h4>
+      <div id="activity-list"></div>
+    </main>
+  </div>
+  <nav class="bottom-nav" id="bottom-nav"></nav>
+  <script defer src="/js/mock-data.js"></script>
+  <script defer src="/js/language.js"></script>
+  <script defer src="/js/theme.js"></script>
+  <script defer src="/js/auth.js"></script>
+  <script defer src="/js/app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      initApp('activity');
+      var lostI = document.getElementById('history-lost-icon');
+      var foundI = document.getElementById('history-found-icon');
+      if (lostI) lostI.innerHTML = iconLost();
+      if (foundI) foundI.innerHTML = iconFound();
+    });
+  </script>
+</body>
+</html>

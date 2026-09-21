@@ -1,0 +1,9 @@
+{
+  "java.project.importOnFirstTimeStartup": "automatic",
+  "java.configuration.updateBuildConfiguration": "automatic",
+  "code-runner.runInTerminal": true,
+  "code-runner.executorMap": {
+    "java": "cd $projectRoot && .\\mvnw.cmd spring-boot:run"
+  },
+  "java.compile.nullAnalysis.mode": "disabled"
+}

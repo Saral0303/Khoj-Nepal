@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('khoj_theme') || 'light';
+        var bg = t === 'dark' ? '#18191A' : '#F2F3F5';
+        document.documentElement.setAttribute('data-theme', t);
+        document.documentElement.style.colorScheme = t === 'dark' ? 'dark' : 'light';
+        document.documentElement.style.backgroundColor = bg;
+        var s = document.createElement('style');
+        s.id = 'khoj-theme-boot';
+        s.textContent = 'html,body{background-color:' + bg + '!important;}';
+        document.documentElement.appendChild(s);
+      } catch (e) {
+        document.documentElement.setAttribute('data-theme', 'light');
+        document.documentElement.style.backgroundColor = '#F2F3F5';
+      }
+    })();
+  </script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Post Item - Khoj Nepal</title>
+  <link rel="icon" href="/assets/logo.png" type="image/png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <nav class="top-nav" id="top-nav"></nav>
+  <div class="app-layout">
+    <aside class="sidebar-left" id="sidebar-left"></aside>
+    <main class="main-content">
+      <div class="page-header">
+        <h1 data-i18n="postItem">Post Item</h1>
+      </div>
+
+      <div id="type-selector">
+        <div class="post-type-grid">
+          <a href="?type=lost" class="post-type-card lost-card">
+            <div class="post-type-icon svg-wrap" id="post-icon-lost"></div>
+            <h3 data-i18n="iLost">I Lost Something</h3>
+            <p data-i18n="lostDesc">Report an item you lost. Photo is optional.</p>
+            <p class="post-type-note" data-i18n="imageOptional">Image optional</p>
+          </a>
+          <a href="?type=found" class="post-type-card found-card">
+            <div class="post-type-icon svg-wrap" id="post-icon-found"></div>
+            <h3 data-i18n="iFound">I Found Something</h3>
+            <p data-i18n="foundDesc">Report an item you found. Photo is required.</p>
+            <p class="post-type-note" data-i18n="imageRequired">Photo required</p>
+          </a>
+        </div>
+        <p class="form-note text-center" data-i18n="handoverExplain">Valuable found items go through Admin Office verification.</p>
+      </div>
+
+      <div id="post-form-section" style="display:none">
+        <div class="post-form-container">
+          <h2 id="form-title"></h2>
+          <form id="post-form">
+            <div class="form-group">
+              <label data-i18n="itemName">Item Name</label>
+              <input type="text" class="form-input" required>
+            </div>
+            <div class="form-group">
+              <label data-i18n="category">Category</label>
+              <select class="form-select" id="category-select" required></select>
+            </div>
+            <div class="form-group">
+              <label data-i18n="subcategory">Subcategory</label>
+              <select class="form-select" id="subcategory-select" required></select>
+            </div>
+            <div class="form-group">
+              <label data-i18n="description">Description</label>
+              <textarea class="form-textarea" required></textarea>
+            </div>
+            <div class="form-group">
+              <label id="location-label" data-i18n="locationLost">Location Lost</label>
+              <input type="text" class="form-input" required>
+            </div>
+            <div class="form-group">
+              <label id="date-label" data-i18n="dateLost">Date Lost</label>
+              <input type="date" class="form-input" required>
+            </div>
+            <div class="form-group">
+              <label><span data-i18n="uploadImage">Upload Image</span> <span id="img-required" class="form-required" style="display:none">*</span></label>
+              <div class="image-upload-area" onclick="document.getElementById('item-image').click()">
+                <p>?? <span data-i18n="uploadImage">Upload Image</span></p>
+              </div>
+              <input type="file" id="item-image" accept="image/*" style="display:none">
+              <div id="image-preview"></div>
+              <p class="form-note" id="photo-note" style="display:none" data-i18n="photoRequiredNote">A photo is required for Found Item posts.</p>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block" id="submit-btn" data-i18n="postLostBtn">Post Lost Item</button>
+          </form>
+        </div>
+      </div>
+    </main>
+    <aside class="sidebar-right" id="sidebar-right"></aside>
+  </div>
+  <nav class="bottom-nav" id="bottom-nav"></nav>
+  <script defer src="/js/mock-data.js"></script>
+  <script defer src="/js/language.js"></script>
+  <script defer src="/js/theme.js"></script>
+  <script defer src="/js/auth.js"></script>
+  <script defer src="/js/app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      initApp('post');
+      var lostIcon = document.getElementById('post-icon-lost');
+      var foundIcon = document.getElementById('post-icon-found');
+      if (lostIcon) lostIcon.innerHTML = iconLost();
+      if (foundIcon) foundIcon.innerHTML = iconFound();
+      var params = new URLSearchParams(window.location.search);
+      var type = params.get('type');
+      var selector = document.getElementById('type-selector');
+      var formSection = document.getElementById('post-form-section');
+      var form = document.getElementById('post-form');
+      var catSelect = document.getElementById('category-select');
+      var subSelect = document.getElementById('subcategory-select');
+      var lang = getLang();
+
+      function fillSubs(catId) {
+        subSelect.innerHTML = '';
+        var cat = getCategory(catId);
+        if (!cat) return;
+        cat.subcategories.forEach(function(s) {
+          var opt = document.createElement('option');
+          opt.value = s.id;
+          opt.textContent = lang === 'ne' ? s.ne : s.en;
+          subSelect.appendChild(opt);
+        });
+      }
+
+      CATEGORIES.forEach(function(c) {
+        var opt = document.createElement('option');
+        opt.value = c.id;
+        opt.textContent = (lang === 'ne' ? c.ne : c.en);
+        catSelect.appendChild(opt);
+      });
+      fillSubs(catSelect.value);
+      catSelect.addEventListener('change', function() { fillSubs(catSelect.value); });
+
+      if (type === 'lost' || type === 'found') {
+        selector.style.display = 'none';
+        formSection.style.display = 'block';
+        form.dataset.type = type;
+        var titleEl = document.getElementById('form-title');
+        titleEl.innerHTML = (type === 'lost' ? typeBadge(true) : typeBadge(false)) + ' ' + (type === 'lost' ? t('iLost') : t('iFound'));
+        document.getElementById('location-label').setAttribute('data-i18n', type === 'lost' ? 'locationLost' : 'locationFound');
+        document.getElementById('date-label').setAttribute('data-i18n', type === 'lost' ? 'dateLost' : 'dateFound');
+        document.getElementById('submit-btn').setAttribute('data-i18n', type === 'lost' ? 'postLostBtn' : 'postFoundBtn');
+        if (type === 'found') {
+          document.getElementById('img-required').style.display = 'inline';
+          document.getElementById('photo-note').style.display = 'block';
+          document.getElementById('item-image').required = true;
+        }
+        applyTranslations();
+        initImagePreview();
+        initPostForm();
+      }
+    });
+  </script>
+</body>
+</html>

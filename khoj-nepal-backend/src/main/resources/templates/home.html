@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('khoj_theme') || 'light';
+        var bg = t === 'dark' ? '#18191A' : '#F2F3F5';
+        document.documentElement.setAttribute('data-theme', t);
+        document.documentElement.style.colorScheme = t === 'dark' ? 'dark' : 'light';
+        document.documentElement.style.backgroundColor = bg;
+        var s = document.createElement('style');
+        s.id = 'khoj-theme-boot';
+        s.textContent = 'html,body{background-color:' + bg + '!important;}';
+        document.documentElement.appendChild(s);
+      } catch (e) {
+        document.documentElement.setAttribute('data-theme', 'light');
+        document.documentElement.style.backgroundColor = '#F2F3F5';
+      }
+    })();
+  </script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home - Khoj Nepal</title>
+  <link rel="icon" href="/assets/logo.png" type="image/png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <nav class="top-nav" id="top-nav"></nav>
+
+  <div class="app-layout">
+    <aside class="sidebar-left" id="sidebar-left"></aside>
+    <main class="main-content">
+      <div class="feed-tabs">
+        <button class="feed-tab active" data-type="all" data-i18n="feedAll">All</button>
+        <button class="feed-tab" data-type="lost"><span class="nav-type-icon" data-icon="lost"></span> <span data-i18n="lostOnly">Lost</span></button>
+        <button class="feed-tab" data-type="found"><span class="nav-type-icon" data-icon="found"></span> <span data-i18n="foundOnly">Found</span></button>
+      </div>
+
+      <h3 class="section-title" data-i18n="recentPosts">Recent Lost & Found</h3>
+      <div id="feed-container"></div>
+      <div id="feed-scroll-sentinel" class="feed-scroll-sentinel" aria-hidden="true"></div>
+
+      <div class="trust-strip mt-16">
+        <span data-i18n="trustAdmin">??? Claims are reviewed by authorized administrators.</span>
+        <span data-i18n="trustHandover">? Items are handed over only after verification.</span>
+      </div>
+    </main>
+    <aside class="sidebar-right" id="sidebar-right"></aside>
+  </div>
+
+  <nav class="bottom-nav" id="bottom-nav"></nav>
+
+  <div class="search-overlay" id="search-overlay"></div>
+
+  <script defer src="/js/mock-data.js"></script>
+  <script defer src="/js/language.js"></script>
+  <script defer src="/js/theme.js"></script>
+  <script defer src="/js/auth.js"></script>
+  <script defer src="/js/app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      initApp('home');
+      document.querySelectorAll('[data-icon="lost"]').forEach(function(el) { el.innerHTML = iconLost(); });
+      document.querySelectorAll('[data-icon="found"]').forEach(function(el) { el.innerHTML = iconFound(); });
+    });
+  </script>
+</body>
+</html>

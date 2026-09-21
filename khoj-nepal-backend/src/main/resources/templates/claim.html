@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('khoj_theme') || 'light';
+        var bg = t === 'dark' ? '#18191A' : '#F2F3F5';
+        document.documentElement.setAttribute('data-theme', t);
+        document.documentElement.style.colorScheme = t === 'dark' ? 'dark' : 'light';
+        document.documentElement.style.backgroundColor = bg;
+        var s = document.createElement('style');
+        s.id = 'khoj-theme-boot';
+        s.textContent = 'html,body{background-color:' + bg + '!important;}';
+        document.documentElement.appendChild(s);
+      } catch (e) {
+        document.documentElement.setAttribute('data-theme', 'light');
+        document.documentElement.style.backgroundColor = '#F2F3F5';
+      }
+    })();
+  </script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Claim Item - Khoj Nepal</title>
+  <link rel="icon" href="/assets/logo.png" type="image/png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <nav class="top-nav" id="top-nav"></nav>
+  <div class="app-layout">
+    <main class="main-content" style="grid-column:1/-1;max-width:640px;margin:0 auto">
+      <div class="claim-container">
+        <div class="page-header">
+          <h1 data-i18n="claimTitle">Claim This Item</h1>
+          <p data-i18n="claimDoesNotGuarantee">Submitting a claim does not guarantee that the item will be released to you. The Khoj Nepal admin team must verify ownership.</p>
+          <p data-i18n="handoverExplain">Finder ? Admin Office ? Verification ? Genuine Owner</p>
+        </div>
+
+        <div id="claim-wait-banner" class="mb-16"></div>
+
+        <div class="step-indicator">
+          <div class="step-dot active">1</div>
+          <div class="step-dot">2</div>
+          <div class="step-dot">3</div>
+        </div>
+
+        <div class="claim-step-panel active" data-step="1">
+          <div class="claim-form-card">
+            <h3 data-i18n="claimStep1">Claim Details</h3>
+            <div class="form-group">
+              <label data-i18n="fullName">Full Name</label>
+              <input type="text" class="form-input" id="claim-name" required>
+            </div>
+            <div class="form-group">
+              <label data-i18n="mobileNumber">Phone Number</label>
+              <input type="tel" class="form-input" id="claim-phone" required>
+            </div>
+            <div class="form-group">
+              <label data-i18n="emailAddress">Email Address</label>
+              <input type="email" class="form-input" id="claim-email" required>
+            </div>
+            <div class="form-group">
+              <label data-i18n="address">Address</label>
+              <input type="text" class="form-input" id="claim-address" required>
+            </div>
+          </div>
+        </div>
+
+        <div class="claim-step-panel" data-step="2">
+          <div class="claim-form-card">
+            <h3 data-i18n="claimStep2">Ownership Information</h3>
+            <div class="form-group">
+              <label data-i18n="whyBelong">Why do you believe this item belongs to you?</label>
+              <textarea class="form-textarea" id="claim-why" required></textarea>
+            </div>
+            <div class="form-group">
+              <label data-i18n="ownershipDetails">Describe details that can help prove ownership.</label>
+              <textarea class="form-textarea" id="claim-details" required></textarea>
+            </div>
+            <div class="form-group">
+              <label for="claim-proof"><span data-i18n="claimProofPhoto">Ownership proof photo</span> <span class="form-note">(<span data-i18n="optional">optional</span>)</span></label>
+              <p class="form-note" data-i18n="claimProofHint">Example: a photo of you with your pet, or a clear photo of a unique mark on the item. This helps admin compare claims.</p>
+              <label class="kyc-upload-box" for="claim-proof">
+                <span data-i18n="claimProofUpload">?? Add proof photo</span>
+                <input type="file" id="claim-proof" accept="image/*" hidden>
+                <img id="claim-proof-preview" class="kyc-preview-img" alt="" hidden>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="claim-step-panel" data-step="3">
+          <div class="claim-form-card">
+            <h3 data-i18n="claimReviewTitle">Review Your Claim</h3>
+            <p class="form-note" data-i18n="claimReviewHint">Please confirm your details before submitting.</p>
+            <div id="claim-review-summary" class="claim-review-summary"></div>
+            <div class="privacy-notice" data-i18n="adminVerifyExplain">The administrator will verify your information before the item can be released.</div>
+          </div>
+        </div>
+
+        <div class="claim-actions">
+          <button type="button" class="btn btn-ghost" id="claim-back" data-i18n="back">Back</button>
+          <button type="button" class="btn btn-primary" id="claim-next" data-i18n="next">Continue</button>
+        </div>
+
+        <div id="claim-progress" class="mt-16"></div>
+
+        <div class="claim-timeline mt-16">
+          <h3 data-i18n="underAdminReview">Under Admin Review</h3>
+          <div class="timeline-item pending"><span>? <span data-i18n="claimSubmitted">Claim Submitted</span></span></div>
+          <div class="timeline-item pending"><span>? <span data-i18n="docsReceived">Identity Documents Received</span></span></div>
+          <div class="timeline-item pending"><span>? <span data-i18n="adminVerification">Admin Verification</span></span></div>
+          <div class="timeline-item pending"><span>? <span data-i18n="ownershipCheck">Ownership Check</span></span></div>
+          <div class="timeline-item pending"><span>? <span data-i18n="finalDecision">Final Decision</span></span></div>
+          <p class="form-note mt-16" data-i18n="claimNote">??? Claims are reviewed before handover.</p>
+        </div>
+      </div>
+    </main>
+  </div>
+  <nav class="bottom-nav" id="bottom-nav"></nav>
+  <script defer src="/js/mock-data.js"></script>
+  <script defer src="/js/language.js"></script>
+  <script defer src="/js/theme.js"></script>
+  <script defer src="/js/auth.js"></script>
+  <script defer src="/js/app.js"></script>
+  <script>document.addEventListener("DOMContentLoaded",function(){initApp('claim');});</script>
+</body>
+</html>

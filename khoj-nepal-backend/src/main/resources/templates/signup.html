@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('khoj_theme') || 'light';
+        var bg = t === 'dark' ? '#18191A' : '#F2F3F5';
+        document.documentElement.setAttribute('data-theme', t);
+        document.documentElement.style.colorScheme = t === 'dark' ? 'dark' : 'light';
+        document.documentElement.style.backgroundColor = bg;
+        var s = document.createElement('style');
+        s.id = 'khoj-theme-boot';
+        s.textContent = 'html,body{background-color:' + bg + '!important;}';
+        document.documentElement.appendChild(s);
+      } catch (e) {
+        document.documentElement.setAttribute('data-theme', 'light');
+        document.documentElement.style.backgroundColor = '#F2F3F5';
+      }
+    })();
+  </script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Account - Khoj Nepal</title>
+  <link rel="icon" href="/assets/logo.png" type="image/png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="auth-page signup-page">
+    <div class="auth-container signup-container">
+      <div class="auth-brand">
+        <img src="/assets/logo.png" alt="Khoj Nepal" class="logo-main">
+        <h1><span style="color:#fff">Khoj</span> <span class="brand-nepal">Nepal</span></h1>
+        <p class="tagline" data-i18n="tagline">Helping Nepal Find What Matters.</p>
+        <p class="nepali-name">??? ?????</p>
+      </div>
+
+      <div class="auth-form-side">
+        <h2 data-i18n="signUp">Create Account</h2>
+
+        <div class="signup-steps">
+          <div class="signup-step active" data-step-indicator="1"><span>1</span> <span data-i18n="signupStep1">Basic Info</span></div>
+          <div class="signup-step" data-step-indicator="2"><span>2</span> <span data-i18n="signupStep2">Contact</span></div>
+          <div class="signup-step" data-step-indicator="3"><span>3</span> <span data-i18n="signupStep3">Security</span></div>
+        </div>
+
+        <form id="signup-form" novalidate>
+          <div id="signup-error" class="form-error-box" style="display:none"></div>
+
+          <div class="signup-panel active" data-panel="1">
+            <div class="profile-pic-upload">
+              <div class="profile-pic-preview" id="signup-avatar-preview">??</div>
+              <div>
+                <label class="btn btn-secondary btn-sm" for="signup-photo" data-i18n="uploadPhoto">Upload Photo (Optional)</label>
+                <input type="file" id="signup-photo" accept="image/*" hidden>
+                <p class="form-note" data-i18n="photoSkipNote">If skipped, a default avatar will be used.</p>
+              </div>
+            </div>
+            <div class="form-group">
+              <label><span data-i18n="fullName">Full Name</span> <span class="form-required">*</span></label>
+              <input type="text" class="form-input" id="signup-fullname" required>
+            </div>
+            <div class="form-group">
+              <label><span data-i18n="username">Username</span> <span class="form-required">*</span></label>
+              <div class="input-prefix">
+                <span>@</span>
+                <input type="text" class="form-input" id="signup-username" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <label><span data-i18n="dateOfBirth">Date of Birth</span> <span class="form-required">*</span></label>
+              <input type="date" class="form-input" id="signup-dob" required>
+            </div>
+            <div class="form-group">
+              <label data-i18n="genderOptional">Gender (Optional)</label>
+              <select class="form-select" id="signup-gender">
+                <option value="" data-i18n="preferNotSay">Prefer not to say</option>
+                <option value="Male" data-i18n="male">Male</option>
+                <option value="Female" data-i18n="female">Female</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="signup-panel" data-panel="2">
+            <div class="form-group">
+              <label><span data-i18n="mobileNumber">Mobile Number</span> <span class="form-required">*</span></label>
+              <div class="input-prefix">
+                <span>???? +977</span>
+                <input type="tel" class="form-input" id="signup-mobile" required>
+              </div>
+              <p class="form-note" data-i18n="signupNote">Please use a valid mobile number for account communication and verification.</p>
+            </div>
+            <div class="form-group">
+              <label><span data-i18n="emailAddress">Email Address</span> <span class="form-required">*</span></label>
+              <input type="email" class="form-input" id="signup-email" required>
+            </div>
+            <div class="form-group">
+              <label><span data-i18n="province">Province</span> <span class="form-required">*</span></label>
+              <select class="form-select" id="signup-province" required>
+                <option value="" data-i18n="selectProvince">Select province</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label><span data-i18n="district">District</span> <span class="form-required">*</span></label>
+              <input type="text" class="form-input" id="signup-district" required>
+            </div>
+            <div class="form-group">
+              <label><span data-i18n="city">City / Municipality</span> <span class="form-required">*</span></label>
+              <input type="text" class="form-input" id="signup-city" required>
+            </div>
+          </div>
+
+          <div class="signup-panel" data-panel="3">
+            <div class="form-group">
+              <label><span data-i18n="password">Password</span> <span class="form-required">*</span></label>
+              <div class="password-field">
+                <input type="password" class="form-input" id="signup-password" required>
+                <button type="button" class="password-toggle" data-target="signup-password" data-i18n="show">Show</button>
+              </div>
+            </div>
+            <div class="form-group">
+              <label><span data-i18n="confirmPassword">Confirm Password</span> <span class="form-required">*</span></label>
+              <div class="password-field">
+                <input type="password" class="form-input" id="signup-confirm" required>
+                <button type="button" class="password-toggle" data-target="signup-confirm" data-i18n="show">Show</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="signup-actions">
+            <button type="button" class="btn btn-ghost" id="signup-back" style="display:none" data-i18n="back">Back</button>
+            <button type="button" class="btn btn-primary" id="signup-next" data-i18n="next">Continue</button>
+          </div>
+        </form>
+
+        <p class="auth-footer"><span data-i18n="haveAccount">Already have an account?</span> <a href="login.html" data-i18n="signIn">Sign In</a></p>
+        <p class="auth-footer auth-admin-link"><a href="admin/login.html" data-i18n="adminLogin">Admin Login</a></p>
+      </div>
+    </div>
+    <a href="help.html?from=signup" class="auth-help-link">
+      <span class="welcome-help-btn-icon" aria-hidden="true">?</span>
+      <span data-i18n="help">Help</span>
+    </a>
+  </div>
+
+  <script defer src="/js/mock-data.js"></script>
+  <script defer src="/js/language.js"></script>
+  <script defer src="/js/theme.js"></script>
+  <script defer src="/js/auth.js"></script>
+  <script defer src="/js/app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      initTheme();
+      applyTranslations();
+
+      var step = 1;
+      var profilePicture = null;
+      var provinceSelect = document.getElementById('signup-province');
+      var errorBox = document.getElementById('signup-error');
+
+      NEPAL_PROVINCES.forEach(function(p) {
+        var opt = document.createElement('option');
+        opt.value = p;
+        opt.textContent = p;
+        provinceSelect.appendChild(opt);
+      });
+
+      function showError(msg) {
+        errorBox.style.display = '';
+        errorBox.textContent = msg;
+      }
+      function clearError() {
+        errorBox.style.display = 'none';
+        errorBox.textContent = '';
+      }
+
+      document.getElementById('signup-photo').addEventListener('change', function(e) {
+        var file = e.target.files[0];
+        if (!file) return;
+        readFileAsDataURL(file).then(function(dataUrl) {
+          profilePicture = dataUrl;
+          var preview = document.getElementById('signup-avatar-preview');
+          preview.innerHTML = '<img src="' + profilePicture + '" alt="Profile">';
+          preview.classList.add('has-image');
+        });
+      });
+
+      document.querySelectorAll('.password-toggle').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          var input = document.getElementById(btn.dataset.target);
+          var show = input.type === 'password';
+          input.type = show ? 'text' : 'password';
+          btn.textContent = show ? 'Hide' : 'Show';
+        });
+      });
+
+      function showStep(n) {
+        step = n;
+        clearError();
+        document.querySelectorAll('.signup-panel').forEach(function(p) { p.classList.toggle('active', Number(p.dataset.panel) === n); });
+        document.querySelectorAll('[data-step-indicator]').forEach(function(s) {
+          var num = Number(s.dataset.stepIndicator);
+          s.classList.toggle('active', num === n);
+          s.classList.toggle('done', num < n);
+        });
+        document.getElementById('signup-back').style.display = n === 1 ? 'none' : '';
+        document.getElementById('signup-next').textContent = n === 3 ? t('createAccountBtn') : t('next');
+        applyTranslations();
+      }
+
+      function validateStep(n) {
+        if (n === 1) {
+          if (!document.getElementById('signup-fullname').value.trim()) return 'Please enter your full name.';
+          if (!document.getElementById('signup-username').value.trim()) return 'Please choose a username.';
+          if (!document.getElementById('signup-dob').value) return 'Please enter your date of birth.';
+        }
+        if (n === 2) {
+          if (!document.getElementById('signup-mobile').value.trim()) return 'Please enter your mobile number.';
+          if (!document.getElementById('signup-email').value.trim()) return 'Please enter your email.';
+          if (!document.getElementById('signup-province').value) return 'Please select a province.';
+          if (!document.getElementById('signup-district').value.trim()) return 'Please enter your district.';
+          if (!document.getElementById('signup-city').value.trim()) return 'Please enter your city.';
+        }
+        if (n === 3) {
+          var pass = document.getElementById('signup-password').value;
+          var confirm = document.getElementById('signup-confirm').value;
+          if (!pass || pass.length < 6) return 'Password must be at least 6 characters.';
+          if (pass !== confirm) return 'Passwords do not match.';
+        }
+        return null;
+      }
+
+      document.getElementById('signup-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+      });
+
+      document.getElementById('signup-next').addEventListener('click', function() {
+        var err = validateStep(step);
+        if (err) { showError(err); return; }
+        if (step < 3) {
+          showStep(step + 1);
+          return;
+        }
+        var nextBtn = document.getElementById('signup-next');
+        var backBtn = document.getElementById('signup-back');
+        if (typeof setButtonLoading === 'function') setButtonLoading(nextBtn, true, 'Creating...');
+        if (typeof showPageLoading === 'function') showPageLoading('Creating your account...');
+        if (backBtn) backBtn.disabled = true;
+        var createFn = typeof createUserAccountAsync === 'function' ? createUserAccountAsync : createUserAccount;
+        createFn({
+          fullName: document.getElementById('signup-fullname').value,
+          username: document.getElementById('signup-username').value,
+          dateOfBirth: document.getElementById('signup-dob').value,
+          gender: document.getElementById('signup-gender').value,
+          mobile: document.getElementById('signup-mobile').value,
+          email: document.getElementById('signup-email').value,
+          province: document.getElementById('signup-province').value,
+          district: document.getElementById('signup-district').value,
+          city: document.getElementById('signup-city').value,
+          password: document.getElementById('signup-password').value,
+          profilePicture: profilePicture
+        }).then(function(result) {
+          if (!result.ok) {
+            if (typeof hidePageLoading === 'function') hidePageLoading();
+            if (typeof setButtonLoading === 'function') setButtonLoading(nextBtn, false);
+            if (backBtn) backBtn.disabled = false;
+            showError(result.error);
+            return;
+          }
+          try { sessionStorage.setItem('khoj_just_logged_in', '1'); } catch (e) {}
+          window.location.href = 'home.html';
+        }).catch(function(e) {
+          if (typeof hidePageLoading === 'function') hidePageLoading();
+          if (typeof setButtonLoading === 'function') setButtonLoading(nextBtn, false);
+          if (backBtn) backBtn.disabled = false;
+          showError(e.message || 'Could not create account.');
+        });
+      });
+
+      document.getElementById('signup-back').addEventListener('click', function() {
+        if (step > 1) showStep(step - 1);
+      });
+
+      showStep(1);
+    });
+  </script>
+</body>
+</html>

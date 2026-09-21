@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('khoj_theme') || 'light';
+        var bg = t === 'dark' ? '#18191A' : '#F2F3F5';
+        document.documentElement.setAttribute('data-theme', t);
+        document.documentElement.style.colorScheme = t === 'dark' ? 'dark' : 'light';
+        document.documentElement.style.backgroundColor = bg;
+        var s = document.createElement('style');
+        s.id = 'khoj-theme-boot';
+        s.textContent = 'html,body{background-color:' + bg + '!important;}';
+        document.documentElement.appendChild(s);
+      } catch (e) {
+        document.documentElement.setAttribute('data-theme', 'light');
+        document.documentElement.style.backgroundColor = '#F2F3F5';
+      }
+    })();
+  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Post Detail - Khoj Nepal Admin</title>
+  <link rel="icon" href="/assets/logo.png" type="image/png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="admin-layout">
+    <aside class="admin-sidebar" id="admin-sidebar"></aside>
+    <main class="admin-main">
+      <div class="admin-mobile-nav" id="admin-mobile-nav"></div>
+      <div id="admin-post-detail"></div>
+    </main>
+  </div>
+  <script defer src="/js/mock-data.js"></script>
+  <script defer src="/js/language.js"></script>
+  <script defer src="/js/theme.js"></script>
+  <script defer src="/js/auth.js"></script>
+  <script defer src="/js/admin.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      if (!initAdminPage('post-detail.html')) return;
+      var postId = new URLSearchParams(window.location.search).get('id');
+      var box = document.getElementById('admin-post-detail');
+      if (!box) return;
+
+      if (!postId) {
+        box.innerHTML = '<div class="admin-header"><h1>Post not found</h1></div><p class="form-note">No post ID provided.</p>';
+        return;
+      }
+
+      var post = null;
+      var allPosts = (typeof getAllUserPosts === 'function' ? getAllUserPosts() : [])
+        .concat(typeof getPostsByType === 'function' ? getPostsByType('found').concat(getPostsByType('lost')) : []);
+      post = allPosts.find(function (p) { return String(p.id) === String(postId); });
+
+      if (!post) {
+        box.innerHTML = '<div class="admin-header"><h1>Post not found</h1></div><p class="form-note">This post does not exist in the database.</p><a href="found.html" class="btn btn-ghost mt-16">Back to Found Items</a>';
+        return;
+      }
+
+      var statusColors = {
+        active: '#10b981', pending: '#f59e0b', rejected: '#ef4444',
+        delivered: '#3b82f6', owner_found: '#8b5cf6', claim_pending: '#f97316',
+        suspicious: '#ef4444', received_by_admin: '#6366f1', under_verification: '#14b8a6'
+      };
+
+      var statusLabel = (post.status || 'unknown').replace(/_/g, ' ').replace(/\b\w/g, function(c) { return c.toUpperCase(); });
+
+      var ownerName = post.userName || '—';
+      var ownerLocation = post.location || '—';
+      var ownerDate = post.date || '—';
+      var postType = post.type || '—';
+
+      var imageHtml = post.image
+        ? '<img src="' + post.image + '" alt="' + (post.title || 'Item') + '" style="max-width:100%;border-radius:8px;margin-top:12px">'
+        : '<div style="padding:40px;text-align:center;background:var(--bg-secondary,#f3f4f6);border-radius:8px;margin-top:12px;color:var(--text-secondary,#6b7280)">No image uploaded</div>';
+
+      var claims = (typeof getAllClaims === 'function' ? getAllClaims() : [])
+        .filter(function (c) { return String(c.postId) === String(postId); });
+
+      var claimsHtml = '';
+      if (claims.length > 0) {
+        claimsHtml = '<div style="margin-top:24px"><h3>Claims on this Post</h3><table class="admin-table" style="margin-top:8px"><thead><tr><th>Claimant</th><th>Status</th><th>Submitted</th><th></th></tr></thead><tbody>' +
+          claims.map(function (c) {
+            var claimStatusColor = statusColors[c.status] || '#6b7280';
+            return '<tr>' +
+              '<td>' + (c.claimantName || '—') + '</td>' +
+              '<td><span class="status-badge" style="background:' + claimStatusColor + ';color:#fff;padding:2px 8px;border-radius:4px;font-size:12px">' + (c.status || '—') + '</span></td>' +
+              '<td>' + (c.submittedDate || '—') + '</td>' +
+              '<td><a href="claims.html?id=' + c.id + '" class="btn btn-sm btn-ghost">View Claim</a></td>' +
+            '</tr>';
+          }).join('') +
+          '</tbody></table></div>';
+      }
+
+      box.innerHTML = '' +
+        '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px">' +
+          '<div style="display:flex;align-items:center;gap:12px">' +
+            '<a href="' + (post.type === 'found' ? 'found.html' : 'lost.html') + '" class="btn btn-ghost" style="display:inline-flex;align-items:center;gap:6px">' +
+              '<span style="font-size:16px">←</span> Back to ' + (post.type === 'found' ? 'Found' : 'Lost') + ' Items' +
+            '</a>' +
+          '</div>' +
+          '<div style="display:flex;align-items:center;gap:8px">' +
+            '<span style="display:inline-flex;align-items:center;gap:6px;background:' + (statusColors[post.status] || '#6b7280') + ';color:#fff;padding:6px 14px;border-radius:8px;font-size:13px;font-weight:600;letter-spacing:0.3px;text-transform:uppercase">' +
+              '<span style="width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,0.5);display:inline-block"></span>' +
+              statusLabel +
+            '</span>' +
+            '<span style="display:inline-flex;align-items:center;background:var(--bg-tertiary,rgba(255,255,255,0.08));color:var(--text-secondary,#9ca3af);padding:6px 14px;border-radius:8px;font-size:13px;font-weight:500;border:1px solid var(--border-color,rgba(255,255,255,0.06))">' +
+              (postType === 'found' ? '🔍' : '📭') + ' ' + postType.toUpperCase() +
+            '</span>' +
+          '</div>' +
+        '</div>' +
+        '<div class="admin-header"><h1>' + (post.title || 'Post Detail') + '</h1></div>' +
+        '<div class="admin-table-card">' +
+          '<div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">' +
+            '<div>' +
+              '<h3 style="margin-bottom:12px">Post Information</h3>' +
+              '<div class="detail-row"><strong>Title:</strong> ' + (post.title || '—') + '</div>' +
+              '<div class="detail-row"><strong>Type:</strong> ' + postType + '</div>' +
+              '<div class="detail-row"><strong>Location:</strong> ' + (post.location || '—') + '</div>' +
+              '<div class="detail-row"><strong>Category:</strong> ' + (post.category || '—') + '</div>' +
+              '<div class="detail-row"><strong>Subcategory:</strong> ' + (post.subcategory || '—') + '</div>' +
+              '<div class="detail-row"><strong>Date Posted:</strong> ' + (post.date || '—') + '</div>' +
+              '<div class="detail-row"><strong>Status:</strong> ' + statusLabel + '</div>' +
+              (post.handoverStep ? '<div class="detail-row"><strong>Handover Step:</strong> ' + post.handoverStep + '</div>' : '') +
+              (post.deliveredDate ? '<div class="detail-row"><strong>Delivered:</strong> ' + post.deliveredDate + '</div>' : '') +
+            '</div>' +
+            '<div>' +
+              '<h3 style="margin-bottom:12px">Posted By</h3>' +
+              '<div class="detail-row"><strong>Name:</strong> ' + ownerName + '</div>' +
+              '<div class="detail-row"><strong>Location:</strong> ' + ownerLocation + '</div>' +
+              '<div class="detail-row"><strong>Date:</strong> ' + ownerDate + '</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="admin-table-card" style="margin-top:16px">' +
+          '<h3>Description</h3>' +
+          '<p style="margin-top:8px;line-height:1.6">' + (post.description || 'No description provided.') + '</p>' +
+        '</div>' +
+        '<div class="admin-table-card" style="margin-top:16px">' +
+          '<h3>Image</h3>' +
+          imageHtml +
+        '</div>' +
+        claimsHtml;
+    });
+  </script>
+</body>
+</html>
