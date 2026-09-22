@@ -3,10 +3,11 @@ package io.virinchi.khojnepal.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeMessage;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
@@ -64,9 +65,6 @@ public class OtpService {
 
     private void sendOtpEmail(String email, String code, String purpose) {
         try {
-            SimpleMailMessage message = new SimpleMailMessage();
-            if (mailFrom != null && !mailFrom.isBlank()) message.setFrom(mailFrom);
-            message.setTo(email);
             String subject;
             String body;
             if ("signup".equals(purpose)) {
@@ -86,9 +84,14 @@ public class OtpService {
                         + "If you did not request this, please ignore this email.\n\n"
                         + "\u2014 Khoj Nepal Team";
             }
-            message.setSubject(subject);
-            message.setText(body);
+
+            MimeMessage message = jms.createMimeMessage();
+            message.setFrom(new InternetAddress(mailFrom));
+            message.setRecipient(jakarta.mail.Message.RecipientType.TO, new InternetAddress(email));
+            message.setSubject(subject, "UTF-8");
+            message.setText(body, "UTF-8");
             jms.send(message);
+
             log.info("OTP sent to {} for {}: {}", email, purpose, code);
         } catch (Exception e) {
             log.error("Failed to send OTP email to {}: {}", email, e.getMessage(), e);
