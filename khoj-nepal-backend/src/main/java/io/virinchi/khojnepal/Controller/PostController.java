@@ -172,8 +172,16 @@ public class PostController {
     }
 
     @GetMapping({"/edit-post", "/edit-post.html"})
-    public String editPost(HttpSession session, Model model) {
-        addUserJson(getUser(session), model);
+    public String editPost(@RequestParam(value = "id", required = false) Integer postId,
+                           HttpSession session, Model model) {
+        UserTbl user = getUser(session);
+        addUserJson(user, model);
+        if (postId != null && user != null) {
+            PostTbl post = postRepo.findById(postId).orElse(null);
+            if (post != null) {
+                model.addAttribute("postsJson", "[" + postsJson(Collections.singletonList(post)) + "]");
+            }
+        }
         return "edit-post";
     }
 
