@@ -179,7 +179,7 @@ public class PostController {
         if (postId != null && user != null) {
             PostTbl post = postRepo.findById(postId).orElse(null);
             if (post != null) {
-                model.addAttribute("postsJson", "[" + postsJson(Collections.singletonList(post)) + "]");
+                model.addAttribute("postsJson", postsJson(Collections.singletonList(post)));
             }
         }
         return "edit-post";

@@ -2274,9 +2274,14 @@ function handleDeletePost(postId) {
     message: t('notifConfirmDeletePost'),
     confirmLabel: typeof t === 'function' ? t('delete') : 'Delete',
     danger: true,
-    onConfirm: function () {
-      const result = deleteMyPost(postId);
-      if (!result.ok) {
+    onConfirm: async function () {
+      try {
+        const result = await deleteMyPost(postId);
+        if (!result.ok) {
+          showNotification(t('notifErrorDeleteFailed'), 'error');
+          return;
+        }
+      } catch (e) {
         showNotification(t('notifErrorDeleteFailed'), 'error');
         return;
       }
