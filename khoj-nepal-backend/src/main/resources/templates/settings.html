@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
@@ -40,9 +40,9 @@
         <div class="settings-section">
           <h3 data-i18n="account">Account</h3>
           <div class="settings-group">
-            <a href="profile.html" class="settings-row"><span data-i18n="viewYourProfile">View Profile</span><span class="chevron">�</span></a>
-            <a href="edit-profile.html" class="settings-row"><span data-i18n="editProfile">Edit Profile</span><span class="chevron">�</span></a>
-            <a href="change-password.html" class="settings-row"><span data-i18n="changePassword">Change Password</span><span class="chevron">�</span></a>
+            <a href="profile.html" class="settings-row"><span data-i18n="viewYourProfile">View Profile</span><span class="chevron">›</span></a>
+            <a href="edit-profile.html" class="settings-row"><span data-i18n="editProfile">Edit Profile</span><span class="chevron">›</span></a>
+            <a href="change-password.html" class="settings-row"><span data-i18n="changePassword">Change Password</span><span class="chevron">›</span></a>
           </div>
         </div>
 
@@ -55,7 +55,7 @@
               </span>
               <div class="theme-toggle-group">
                 <button class="theme-btn" id="set-lang-en" type="button">English</button>
-                <button class="theme-btn" id="set-lang-ne" type="button">??????</button>
+                <button class="theme-btn" id="set-lang-ne" type="button">नेपाली</button>
               </div>
             </div>
             <div class="settings-row">
@@ -65,17 +65,17 @@
                 <button class="theme-btn" id="set-dark" onclick="setTheme('dark')">?? <span data-i18n="darkMode">Dark</span></button>
               </div>
             </div>
-            <a href="notifications.html" class="settings-row"><span data-i18n="notifications">Notifications</span><span class="chevron">�</span></a>
+            <a href="notifications.html" class="settings-row"><span data-i18n="notifications">Notifications</span><span class="chevron">›</span></a>
           </div>
         </div>
 
         <div class="settings-section">
           <h3 data-i18n="history">History</h3>
           <div class="settings-group">
-            <a href="activity.html" class="settings-row"><span data-i18n="history">History</span><span class="chevron">�</span></a>
-            <a href="activity.html#my-lost-posts" class="settings-row"><span data-i18n="myPosts">My Posts</span><span class="chevron">�</span></a>
-            <a href="activity.html#my-claims-list" class="settings-row"><span data-i18n="myClaims">My Claims</span><span class="chevron">�</span></a>
-            <a href="office.html" class="settings-row"><span data-i18n="officeInfo">Admin Office</span><span class="chevron">�</span></a>
+            <a href="activity.html" class="settings-row"><span data-i18n="history">History</span><span class="chevron">›</span></a>
+            <a href="activity.html#my-lost-posts" class="settings-row"><span data-i18n="myPosts">My Posts</span><span class="chevron">›</span></a>
+            <a href="activity.html#my-claims-list" class="settings-row"><span data-i18n="myClaims">My Claims</span><span class="chevron">›</span></a>
+            <a href="office.html" class="settings-row"><span data-i18n="officeInfo">Admin Office</span><span class="chevron">›</span></a>
           </div>
         </div>
 
@@ -89,8 +89,8 @@
                       th:text="${user.kycStatus != null} ? ${user.kycStatus} : 'none'">none</span>
               </span>
             </div>
-            <a href="kyc.html" class="settings-row"><span data-i18n="kycInfoTitle">Identity & Ownership Verification</span><span class="chevron">�</span></a>
-            <a href="help.html#kyc-help" class="settings-row"><span data-i18n="kycPrivacyInfo">KYC Privacy Information</span><span class="chevron">�</span></a>
+            <a href="kyc.html" class="settings-row"><span data-i18n="kycInfoTitle">Identity & Ownership Verification</span><span class="chevron">›</span></a>
+            <a href="help.html#kyc-help" class="settings-row"><span data-i18n="kycPrivacyInfo">KYC Privacy Information</span><span class="chevron">›</span></a>
           </div>
           <p class="form-note" style="margin-top:8px" data-i18n="trustKyc">?? Your KYC documents are private.</p>
           <p class="form-note" data-i18n="trustRetention">?? Recovered records are retained temporarily for investigation.</p>
@@ -99,10 +99,10 @@
         <div class="settings-section">
           <h3 data-i18n="support">Support</h3>
           <div class="settings-group">
-            <a href="help.html" class="settings-row"><span data-i18n="helpCenter">Help Center</span><span class="chevron">�</span></a>
-            <a href="help.html#report-problem" class="settings-row"><span data-i18n="reportProblem">Report a Problem</span><span class="chevron">�</span></a>
-            <a href="how-it-works.html" class="settings-row"><span data-i18n="howItWorks">How Khoj Nepal Works</span><span class="chevron">�</span></a>
-            <a href="help.html#kyc-help" class="settings-row"><span data-i18n="kycHelpTitle">KYC & Identity Verification</span><span class="chevron">�</span></a>
+            <a href="help.html" class="settings-row"><span data-i18n="helpCenter">Help Center</span><span class="chevron">›</span></a>
+            <a href="help.html#report-problem" class="settings-row"><span data-i18n="reportProblem">Report a Problem</span><span class="chevron">›</span></a>
+            <a href="how-it-works.html" class="settings-row"><span data-i18n="howItWorks">How Khoj Nepal Works</span><span class="chevron">›</span></a>
+            <a href="help.html#kyc-help" class="settings-row"><span data-i18n="kycHelpTitle">KYC & Identity Verification</span><span class="chevron">›</span></a>
           </div>
         </div>
 
@@ -134,7 +134,7 @@
         var colors = { none: '#6b7280', pending: '#f59e0b', verified: '#10b981', rejected: '#ef4444' };
         var labels = { none: 'Not Completed', pending: 'Under Review', verified: 'Verified', rejected: 'Rejected' };
         if (getLang() === 'ne') {
-          labels = { none: '???? ???', pending: '?????????', verified: '????????', rejected: '????????' };
+          labels = { none: 'होइन', pending: 'पेन्डिङ', verified: 'प्रमाणित', rejected: 'अस्वीकृत' };
         }
         var badge = document.getElementById('kyc-status-badge');
         if (badge) {
