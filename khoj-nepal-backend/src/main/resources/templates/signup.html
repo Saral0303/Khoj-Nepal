@@ -104,7 +104,6 @@
               </div>
 
               <div id="signup-otp-inline" style="display:none">
-                <p id="signup-otp-hint" class="form-note mb-8" style="display:none;color:#22c55e;font-weight:600;font-size:14px"></p>
                 <div class="form-group">
                   <label><span data-i18n="verificationCode">Verification Code</span> <span class="form-required">*</span></label>
                   <div style="display:flex;gap:8px;align-items:center">
@@ -270,17 +269,11 @@
         signupEmail = email;
         clearError();
         if (typeof setButtonLoading === 'function') setButtonLoading(sendOtpBtn, true, 'Sending...');
-        sendOtpToEmail(signupEmail, 'signup').then(function(result) {
+        sendOtpToEmail(signupEmail, 'signup').then(function(ok) {
           if (typeof setButtonLoading === 'function') setButtonLoading(sendOtpBtn, false);
-          if (!result.ok) { showError('Failed to send verification code. Check your email.'); return; }
+          if (!ok) { showError('Failed to send verification code. Check your email.'); return; }
           otpInline.style.display = '';
           sendOtpBtn.style.display = 'none';
-          if (result.otp) {
-            var otpInput = document.getElementById('signup-otp');
-            if (otpInput) otpInput.value = result.otp;
-            var otpHint = document.getElementById('signup-otp-hint');
-            if (otpHint) { otpHint.style.display = ''; otpHint.textContent = 'Your verification code: ' + result.otp; }
-          }
         }).catch(function() {
           if (typeof setButtonLoading === 'function') setButtonLoading(sendOtpBtn, false);
           showError('Failed to send verification code. Try again.');

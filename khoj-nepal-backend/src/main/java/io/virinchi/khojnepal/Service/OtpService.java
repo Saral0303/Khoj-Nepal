@@ -66,36 +66,63 @@ public class OtpService {
     private void sendOtpEmail(String email, String code, String purpose) {
         try {
             String subject;
-            String body;
+            String htmlBody;
+            String textBody;
             if ("signup".equals(purpose)) {
-                subject = "Khoj Nepal \u2014 Email Verification Code";
-                body = "Namaste!\n\n"
-                        + "Your Khoj Nepal verification code is:\n\n"
-                        + "   " + code + "\n\n"
+                subject = "Khoj Nepal - Email Verification Code";
+                textBody = "Namaste!\n\n"
+                        + "Your Khoj Nepal verification code is: " + code + "\n\n"
                         + "This code expires in 5 minutes.\n"
                         + "If you did not request this, please ignore this email.\n\n"
-                        + "\u2014 Khoj Nepal Team";
+                        + "Khoj Nepal Team";
+                htmlBody = buildOtpHtml(code, "Email Verification", "Use this code to verify your email address on Khoj Nepal.");
             } else {
-                subject = "Khoj Nepal \u2014 Password Reset Code";
-                body = "Namaste!\n\n"
-                        + "Your Khoj Nepal password reset code is:\n\n"
-                        + "   " + code + "\n\n"
+                subject = "Khoj Nepal - Password Reset Code";
+                textBody = "Namaste!\n\n"
+                        + "Your Khoj Nepal password reset code is: " + code + "\n\n"
                         + "This code expires in 5 minutes.\n"
                         + "If you did not request this, please ignore this email.\n\n"
-                        + "\u2014 Khoj Nepal Team";
+                        + "Khoj Nepal Team";
+                htmlBody = buildOtpHtml(code, "Password Reset", "Use this code to reset your password on Khoj Nepal.");
             }
 
             MimeMessage message = jms.createMimeMessage();
-            message.setFrom(new InternetAddress(mailFrom));
+            message.setFrom(new InternetAddress(mailFrom, "Khoj Nepal"));
+            message.setReplyTo(InternetAddress.parse(mailFrom));
             message.setRecipient(jakarta.mail.Message.RecipientType.TO, new InternetAddress(email));
             message.setSubject(subject, "UTF-8");
-            message.setText(body, "UTF-8");
-            jms.send(message);
+            message.setHeader("X-Mailer", "KhojNepal");
+            message.setHeader("Precedence", "bulk");
+            message.setHeader("X-Auto-Response-Suppress", "All");
+            message.setText(textBody, "UTF-8");
+            message.setContent(htmlBody, "text/html; charset=UTF-8");
 
+            jms.send(message);
             log.info("OTP sent to {} for {}: {}", email, purpose, code);
         } catch (Exception e) {
             log.error("Failed to send OTP email to {}: {}", email, e.getMessage(), e);
         }
+    }
+
+    private String buildOtpHtml(String code, String title, String subtitle) {
+        return "<!DOCTYPE html><html><head><meta charset='UTF-8'></head>"
+                + "<body style='margin:0;padding:0;background:#f4f5f7;font-family:Arial,sans-serif;'>"
+                + "<div style='max-width:480px;margin:40px auto;background:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.1);'>"
+                + "<div style='background:linear-gradient(135deg,#1a1a2e,#16213e);padding:32px;text-align:center;'>"
+                + "<h1 style='color:#ffffff;margin:0;font-size:24px;'><span style='color:#ffffff;'>Khoj</span> <span style='color:#94a3b8;'>Nepal</span></h1>"
+                + "</div>"
+                + "<div style='padding:32px;text-align:center;'>"
+                + "<h2 style='color:#1a1a2e;margin:0 0 8px;font-size:20px;'>" + title + "</h2>"
+                + "<p style='color:#64748b;margin:0 0 24px;font-size:14px;'>" + subtitle + "</p>"
+                + "<div style='background:#f8fafc;border:2px dashed #cbd5e1;border-radius:8px;padding:20px;margin:0 0 24px;'>"
+                + "<p style='color:#94a3b8;margin:0 0 8px;font-size:12px;text-transform:uppercase;letter-spacing:2px;'>Your verification code</p>"
+                + "<p style='color:#1a1a2e;margin:0;font-size:36px;font-weight:bold;letter-spacing:8px;'>" + code + "</p>"
+                + "</div>"
+                + "<p style='color:#94a3b8;margin:0;font-size:12px;'>This code expires in 5 minutes.</p>"
+                + "</div>"
+                + "<div style='background:#f8fafc;padding:16px;text-align:center;'>"
+                + "<p style='color:#94a3b8;margin:0;font-size:11px;'>If you did not request this, please ignore this email.</p>"
+                + "</div></div></body></html>";
     }
 
     private static class OtpEntry {

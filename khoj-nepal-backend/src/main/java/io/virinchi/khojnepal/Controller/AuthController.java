@@ -267,8 +267,8 @@ public class AuthController {
         if ("forgot-password".equals(purpose) && !userService.existsByEmail(email)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "No account found with this email"));
         }
-        String otpCode = otpService.generateAndSend(email, purpose);
-        return ResponseEntity.ok(Map.of("message", "OTP sent to " + email, "otp", otpCode));
+        otpService.generateAndSend(email, purpose);
+        return ResponseEntity.ok(Map.of("message", "OTP sent to " + email));
     }
 
     @PostMapping("/auth/verify-otp")
