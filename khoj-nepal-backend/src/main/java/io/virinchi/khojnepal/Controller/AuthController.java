@@ -120,6 +120,9 @@ public class AuthController {
         if (password.length() < 6) {
             return ResponseEntity.badRequest().body(Map.of("error", "Password must be at least 6 characters"));
         }
+        if (!otpService.isEmailVerified(email)) {
+            return ResponseEntity.badRequest().body(Map.of("error", "Please verify your email with OTP first"));
+        }
         if (userService.existsByUsername(username)) {
             return ResponseEntity.badRequest().body(Map.of("error", "Username already taken"));
         }
@@ -136,6 +139,7 @@ public class AuthController {
 
         session.setAttribute("userId", user.getId());
         session.setAttribute("role", user.getRole());
+        otpService.clearVerification(email);
         sendSignupEmail(user);
         return ResponseEntity.ok(userService.safeUser(user));
     }

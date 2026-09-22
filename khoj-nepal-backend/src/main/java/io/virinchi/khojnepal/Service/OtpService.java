@@ -1,5 +1,7 @@
 package io.virinchi.khojnepal.Service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -7,15 +9,19 @@ import org.springframework.stereotype.Service;
 
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 public class OtpService {
 
+    private static final Logger log = LoggerFactory.getLogger(OtpService.class);
+
     private final JavaMailSender jms;
     private final Random random = new Random();
 
     private final Map<String, OtpEntry> store = new ConcurrentHashMap<>();
+    private final Set<String> verifiedEmails = ConcurrentHashMap.newKeySet();
 
     @Value("${spring.mail.username:}")
     private String mailFrom;
@@ -37,7 +43,19 @@ public class OtpService {
         OtpEntry entry = store.remove(key);
         if (entry == null) return false;
         if (System.currentTimeMillis() > entry.expiresAt) return false;
-        return entry.code.equals(code);
+        boolean ok = entry.code.equals(code);
+        if (ok && "signup".equals(purpose)) {
+            verifiedEmails.add(email.toLowerCase());
+        }
+        return ok;
+    }
+
+    public boolean isEmailVerified(String email) {
+        return verifiedEmails.contains(email.toLowerCase());
+    }
+
+    public void clearVerification(String email) {
+        verifiedEmails.remove(email.toLowerCase());
     }
 
     public void clear(String email, String purpose) {
@@ -52,28 +70,28 @@ public class OtpService {
             String subject;
             String body;
             if ("signup".equals(purpose)) {
-                subject = "Khoj Nepal — Email Verification Code";
+                subject = "Khoj Nepal \u2014 Email Verification Code";
                 body = "Namaste!\n\n"
                         + "Your Khoj Nepal verification code is:\n\n"
                         + "   " + code + "\n\n"
                         + "This code expires in 5 minutes.\n"
                         + "If you did not request this, please ignore this email.\n\n"
-                        + "— Khoj Nepal Team";
+                        + "\u2014 Khoj Nepal Team";
             } else {
-                subject = "Khoj Nepal — Password Reset Code";
+                subject = "Khoj Nepal \u2014 Password Reset Code";
                 body = "Namaste!\n\n"
                         + "Your Khoj Nepal password reset code is:\n\n"
                         + "   " + code + "\n\n"
                         + "This code expires in 5 minutes.\n"
                         + "If you did not request this, please ignore this email.\n\n"
-                        + "— Khoj Nepal Team";
+                        + "\u2014 Khoj Nepal Team";
             }
             message.setSubject(subject);
             message.setText(body);
             jms.send(message);
-            System.out.println("OTP sent to " + email + " for " + purpose + ": " + code);
+            log.info("OTP sent to {} for {}: {}", email, purpose, code);
         } catch (Exception e) {
-            System.err.println("Failed to send OTP email: " + e.getMessage());
+            log.error("Failed to send OTP email to {}: {}", email, e.getMessage(), e);
         }
     }
 
