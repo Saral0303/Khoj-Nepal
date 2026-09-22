@@ -86,10 +86,34 @@ public class ClaimController {
         return sb.toString();
     }
 
+    private String postJson(PostTbl p) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("{\"id\":").append(p.getId());
+        sb.append(",\"title\":\"").append(esc(p.getTitle())).append("\"");
+        sb.append(",\"titleNe\":\"").append(esc(p.getTitleNe())).append("\"");
+        sb.append(",\"type\":\"").append(esc(p.getType())).append("\"");
+        sb.append(",\"category\":\"").append(esc(p.getCategory())).append("\"");
+        sb.append(",\"subcategory\":\"").append(esc(p.getSubcategory())).append("\"");
+        sb.append(",\"description\":\"").append(esc(p.getDescription())).append("\"");
+        sb.append(",\"descriptionNe\":\"").append(esc(p.getDescriptionNe())).append("\"");
+        sb.append(",\"location\":\"").append(esc(p.getLocation())).append("\"");
+        sb.append(",\"locationNe\":\"").append(esc(p.getLocationNe())).append("\"");
+        sb.append(",\"date\":\"").append(esc(p.getDate())).append("\"");
+        sb.append(",\"image\":\"").append(esc(p.getImage())).append("\"");
+        sb.append(",\"status\":\"").append(esc(p.getStatus())).append("\"");
+        sb.append(",\"ownerId\":").append(p.getOwnerId());
+        sb.append(",\"userId\":").append(p.getUserId());
+        sb.append(",\"createdAt\":\"").append(esc(p.getCreatedAt())).append("\"");
+        sb.append(",\"userName\":\"").append(esc(p.getUserName())).append("\"");
+        sb.append("}");
+        return sb.toString();
+    }
+
     /* ──────── page routes ──────── */
 
     @GetMapping({"/claim", "/claim.html"})
-    public String claim(HttpSession session, Model model) {
+    public String claim(@RequestParam(value = "id", required = false) Integer postId,
+                        HttpSession session, Model model) {
         UserTbl user = getUser(session);
         List<ClaimTbl> myClaims = Collections.emptyList();
         if (user != null) {
@@ -97,6 +121,15 @@ public class ClaimController {
         }
         model.addAttribute("user", user);
         model.addAttribute("claimsJson", claimsJson(myClaims));
+
+        if (postId != null) {
+            PostTbl post = postRepo.findById(postId).orElse(null);
+            if (post != null) {
+                model.addAttribute("post", post);
+                model.addAttribute("postsJson", "[" + postJson(post) + "]");
+            }
+        }
+
         addUserJson(user, model);
         return "claim";
     }
