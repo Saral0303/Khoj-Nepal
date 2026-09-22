@@ -1796,7 +1796,8 @@ function initEditPostForm() {
 
   const id = new URLSearchParams(window.location.search).get('id');
   const errorBox = document.getElementById('edit-post-error');
-  const post = typeof getMyPostById === 'function' ? getMyPostById(id) : null;
+  const post = (typeof getMyPostById === 'function' ? getMyPostById(id) : null)
+    || (typeof getPostById === 'function' ? getPostById(id) : null);
   const cancel = document.getElementById('edit-cancel');
 
   function showError(msg) {
