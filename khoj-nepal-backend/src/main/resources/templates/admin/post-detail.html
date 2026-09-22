@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
   <script>
@@ -33,7 +33,79 @@
     <aside class="admin-sidebar" id="admin-sidebar"></aside>
     <main class="admin-main">
       <div class="admin-mobile-nav" id="admin-mobile-nav"></div>
-      <div id="admin-post-detail"></div>
+      <div id="admin-post-detail">
+        <div th:if="${post != null}">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px">
+            <div style="display:flex;align-items:center;gap:12px">
+              <a th:href="@{/admin/posts}" class="btn btn-ghost" style="display:inline-flex;align-items:center;gap:6px">
+                <span style="font-size:16px">&larr;</span> Back to Posts
+              </a>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px">
+              <span style="display:inline-flex;align-items:center;gap:6px;background:#6b7280;color:#fff;padding:6px 14px;border-radius:8px;font-size:13px;font-weight:600;letter-spacing:0.3px;text-transform:uppercase"
+                    th:style="'background:' + (${post.status == 'active'} ? '#10b981' : (${post.status == 'pending'} ? '#f59e0b' : (${post.status == 'rejected'} ? '#ef4444' : '#6b7280')))">
+                <span style="width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,0.5);display:inline-block"></span>
+                <span th:text="${post.status}">Status</span>
+              </span>
+              <span style="display:inline-flex;align-items:center;background:var(--bg-tertiary,rgba(255,255,255,0.08));color:var(--text-secondary,#9ca3af);padding:6px 14px;border-radius:8px;font-size:13px;font-weight:500;border:1px solid var(--border-color,rgba(255,255,255,0.06))">
+                <span th:text="${post.type}">Type</span>
+              </span>
+            </div>
+          </div>
+          <div class="admin-header"><h1 th:text="${post.title}">Post Detail</h1></div>
+          <div class="admin-table-card">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
+              <div>
+                <h3 style="margin-bottom:12px">Post Information</h3>
+                <div class="detail-row"><strong>Title:</strong> <span th:text="${post.title}">-</span></div>
+                <div class="detail-row"><strong>Type:</strong> <span th:text="${post.type}">-</span></div>
+                <div class="detail-row"><strong>Location:</strong> <span th:text="${post.location}">-</span></div>
+                <div class="detail-row"><strong>Category:</strong> <span th:text="${post.category}">-</span></div>
+                <div class="detail-row"><strong>Subcategory:</strong> <span th:text="${post.subcategory}">-</span></div>
+                <div class="detail-row"><strong>Date Posted:</strong> <span th:text="${post.date}">-</span></div>
+                <div class="detail-row"><strong>Status:</strong> <span th:text="${post.status}">-</span></div>
+                <div class="detail-row" th:if="${post.handoverStep}"><strong>Handover Step:</strong> <span th:text="${post.handoverStep}">-</span></div>
+                <div class="detail-row" th:if="${post.deliveredDate}"><strong>Delivered:</strong> <span th:text="${post.deliveredDate}">-</span></div>
+              </div>
+              <div>
+                <h3 style="margin-bottom:12px">Posted By</h3>
+                <div class="detail-row"><strong>Name:</strong> <span th:text="${post.userName}">-</span></div>
+                <div class="detail-row"><strong>Location:</strong> <span th:text="${post.location}">-</span></div>
+                <div class="detail-row"><strong>Date:</strong> <span th:text="${post.date}">-</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="admin-table-card" style="margin-top:16px">
+            <h3>Description</h3>
+            <p style="margin-top:8px;line-height:1.6" th:text="${post.description}">No description provided.</p>
+          </div>
+          <div class="admin-table-card" style="margin-top:16px" th:if="${post.image}">
+            <h3>Image</h3>
+            <img th:src="${post.image}" th:alt="${post.title}" style="max-width:100%;border-radius:8px;margin-top:12px">
+          </div>
+          <div style="margin-top:24px" th:unless="${#lists.isEmpty(postClaims)}">
+            <h3>Claims on this Post</h3>
+            <table class="admin-table" style="margin-top:8px">
+              <thead><tr><th>Claimant</th><th>Status</th><th>Submitted</th><th></th></tr></thead>
+              <tbody>
+                <tr th:each="claim : ${postClaims}">
+                  <td th:text="${claim.claimantName}">Claimant</td>
+                  <td><span class="status-badge" style="padding:2px 8px;border-radius:4px;font-size:12px;color:#fff"
+                            th:style="'background:' + (${claim.status == 'approved'} ? '#10b981' : (${claim.status == 'rejected'} ? '#ef4444' : '#f59e0b'))"
+                            th:text="${claim.status}">Status</span></td>
+                  <td th:text="${claim.submittedDate}">Submitted</td>
+                  <td><a th:href="@{/admin/claims}" class="btn btn-sm btn-ghost">View Claim</a></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div th:if="${post == null}">
+          <div class="admin-header"><h1>Post not found</h1></div>
+          <p class="form-note">No post ID provided or post does not exist.</p>
+          <a href="posts.html" class="btn btn-ghost mt-16">Back to Posts</a>
+        </div>
+      </div>
     </main>
   </div>
   <script defer src="/js/mock-data.js"></script>
@@ -41,112 +113,10 @@
   <script defer src="/js/theme.js"></script>
   <script defer src="/js/auth.js"></script>
   <script defer src="/js/admin.js"></script>
+  <script th:if="${userJson != null}" id="server-user-data" type="application/json" th:utext="${userJson}"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
-      if (!initAdminPage('post-detail.html')) return;
-      var postId = new URLSearchParams(window.location.search).get('id');
-      var box = document.getElementById('admin-post-detail');
-      if (!box) return;
-
-      if (!postId) {
-        box.innerHTML = '<div class="admin-header"><h1>Post not found</h1></div><p class="form-note">No post ID provided.</p>';
-        return;
-      }
-
-      var post = null;
-      var allPosts = (typeof getAllUserPosts === 'function' ? getAllUserPosts() : [])
-        .concat(typeof getPostsByType === 'function' ? getPostsByType('found').concat(getPostsByType('lost')) : []);
-      post = allPosts.find(function (p) { return String(p.id) === String(postId); });
-
-      if (!post) {
-        box.innerHTML = '<div class="admin-header"><h1>Post not found</h1></div><p class="form-note">This post does not exist in the database.</p><a href="found.html" class="btn btn-ghost mt-16">Back to Found Items</a>';
-        return;
-      }
-
-      var statusColors = {
-        active: '#10b981', pending: '#f59e0b', rejected: '#ef4444',
-        delivered: '#3b82f6', owner_found: '#8b5cf6', claim_pending: '#f97316',
-        suspicious: '#ef4444', received_by_admin: '#6366f1', under_verification: '#14b8a6'
-      };
-
-      var statusLabel = (post.status || 'unknown').replace(/_/g, ' ').replace(/\b\w/g, function(c) { return c.toUpperCase(); });
-
-      var ownerName = post.userName || '—';
-      var ownerLocation = post.location || '—';
-      var ownerDate = post.date || '—';
-      var postType = post.type || '—';
-
-      var imageHtml = post.image
-        ? '<img src="' + post.image + '" alt="' + (post.title || 'Item') + '" style="max-width:100%;border-radius:8px;margin-top:12px">'
-        : '<div style="padding:40px;text-align:center;background:var(--bg-secondary,#f3f4f6);border-radius:8px;margin-top:12px;color:var(--text-secondary,#6b7280)">No image uploaded</div>';
-
-      var claims = (typeof getAllClaims === 'function' ? getAllClaims() : [])
-        .filter(function (c) { return String(c.postId) === String(postId); });
-
-      var claimsHtml = '';
-      if (claims.length > 0) {
-        claimsHtml = '<div style="margin-top:24px"><h3>Claims on this Post</h3><table class="admin-table" style="margin-top:8px"><thead><tr><th>Claimant</th><th>Status</th><th>Submitted</th><th></th></tr></thead><tbody>' +
-          claims.map(function (c) {
-            var claimStatusColor = statusColors[c.status] || '#6b7280';
-            return '<tr>' +
-              '<td>' + (c.claimantName || '—') + '</td>' +
-              '<td><span class="status-badge" style="background:' + claimStatusColor + ';color:#fff;padding:2px 8px;border-radius:4px;font-size:12px">' + (c.status || '—') + '</span></td>' +
-              '<td>' + (c.submittedDate || '—') + '</td>' +
-              '<td><a href="claims.html?id=' + c.id + '" class="btn btn-sm btn-ghost">View Claim</a></td>' +
-            '</tr>';
-          }).join('') +
-          '</tbody></table></div>';
-      }
-
-      box.innerHTML = '' +
-        '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px">' +
-          '<div style="display:flex;align-items:center;gap:12px">' +
-            '<a href="' + (post.type === 'found' ? 'found.html' : 'lost.html') + '" class="btn btn-ghost" style="display:inline-flex;align-items:center;gap:6px">' +
-              '<span style="font-size:16px">←</span> Back to ' + (post.type === 'found' ? 'Found' : 'Lost') + ' Items' +
-            '</a>' +
-          '</div>' +
-          '<div style="display:flex;align-items:center;gap:8px">' +
-            '<span style="display:inline-flex;align-items:center;gap:6px;background:' + (statusColors[post.status] || '#6b7280') + ';color:#fff;padding:6px 14px;border-radius:8px;font-size:13px;font-weight:600;letter-spacing:0.3px;text-transform:uppercase">' +
-              '<span style="width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,0.5);display:inline-block"></span>' +
-              statusLabel +
-            '</span>' +
-            '<span style="display:inline-flex;align-items:center;background:var(--bg-tertiary,rgba(255,255,255,0.08));color:var(--text-secondary,#9ca3af);padding:6px 14px;border-radius:8px;font-size:13px;font-weight:500;border:1px solid var(--border-color,rgba(255,255,255,0.06))">' +
-              (postType === 'found' ? '🔍' : '📭') + ' ' + postType.toUpperCase() +
-            '</span>' +
-          '</div>' +
-        '</div>' +
-        '<div class="admin-header"><h1>' + (post.title || 'Post Detail') + '</h1></div>' +
-        '<div class="admin-table-card">' +
-          '<div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">' +
-            '<div>' +
-              '<h3 style="margin-bottom:12px">Post Information</h3>' +
-              '<div class="detail-row"><strong>Title:</strong> ' + (post.title || '—') + '</div>' +
-              '<div class="detail-row"><strong>Type:</strong> ' + postType + '</div>' +
-              '<div class="detail-row"><strong>Location:</strong> ' + (post.location || '—') + '</div>' +
-              '<div class="detail-row"><strong>Category:</strong> ' + (post.category || '—') + '</div>' +
-              '<div class="detail-row"><strong>Subcategory:</strong> ' + (post.subcategory || '—') + '</div>' +
-              '<div class="detail-row"><strong>Date Posted:</strong> ' + (post.date || '—') + '</div>' +
-              '<div class="detail-row"><strong>Status:</strong> ' + statusLabel + '</div>' +
-              (post.handoverStep ? '<div class="detail-row"><strong>Handover Step:</strong> ' + post.handoverStep + '</div>' : '') +
-              (post.deliveredDate ? '<div class="detail-row"><strong>Delivered:</strong> ' + post.deliveredDate + '</div>' : '') +
-            '</div>' +
-            '<div>' +
-              '<h3 style="margin-bottom:12px">Posted By</h3>' +
-              '<div class="detail-row"><strong>Name:</strong> ' + ownerName + '</div>' +
-              '<div class="detail-row"><strong>Location:</strong> ' + ownerLocation + '</div>' +
-              '<div class="detail-row"><strong>Date:</strong> ' + ownerDate + '</div>' +
-            '</div>' +
-          '</div>' +
-        '</div>' +
-        '<div class="admin-table-card" style="margin-top:16px">' +
-          '<h3>Description</h3>' +
-          '<p style="margin-top:8px;line-height:1.6">' + (post.description || 'No description provided.') + '</p>' +
-        '</div>' +
-        '<div class="admin-table-card" style="margin-top:16px">' +
-          '<h3>Image</h3>' +
-          imageHtml +
-        '</div>' +
-        claimsHtml;
+      if (typeof initAdminPage === 'function') { initAdminPage('post-detail.html'); }
     });
   </script>
 </body>

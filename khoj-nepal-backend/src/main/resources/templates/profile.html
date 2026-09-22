@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
   <script>
@@ -32,8 +32,31 @@
   <nav class="top-nav" id="top-nav"></nav>
   <div class="app-layout">
     <main class="main-content" style="grid-column:1/-1;max-width:680px;margin:0 auto">
-      <div class="profile-header-card" id="profile-header"></div>
-      <div class="profile-private-card" id="profile-private-info"></div>
+      <div class="profile-header-card" id="profile-header" th:if="${user != null}">
+        <div class="profile-name" th:text="${user.fullName}">User Name</div>
+        <div class="profile-detail">@<span th:text="${user.username}">username</span></div>
+        <div class="profile-detail" th:text="${user.email}">email</div>
+        <div class="profile-stats">
+          <span>Points: <strong th:text="${user.points}">0</strong></span>
+          <span>Reported: <strong th:text="${user.itemsReported}">0</strong></span>
+          <span>Returned: <strong th:text="${user.itemsReturned}">0</strong></span>
+        </div>
+      </div>
+      <div class="profile-private-card" id="profile-private-info">
+        <h3>My Posts</h3>
+        <div th:if="${#lists.isEmpty(myPosts)}" class="empty-state">
+          <p>No posts yet.</p>
+        </div>
+        <div th:unless="${#lists.isEmpty(myPosts)}">
+          <div class="post-card" th:each="post : ${myPosts}">
+            <h4 th:text="${post.title}">Title</h4>
+            <p th:text="${post.description}">Description</p>
+            <span class="type-badge" th:classappend="${post.type == 'lost'} ? 'type-lost' : 'type-found'" th:text="${post.type}">Type</span>
+            <span th:text="${post.status}">Status</span>
+            <a th:href="@{/item-details(id=${post.id})}" class="btn btn-sm btn-ghost">View</a>
+          </div>
+        </div>
+      </div>
     </main>
   </div>
   <nav class="bottom-nav" id="bottom-nav"></nav>
@@ -42,6 +65,9 @@
   <script defer src="/js/theme.js"></script>
   <script defer src="/js/auth.js"></script>
   <script defer src="/js/app.js"></script>
+  <script th:if="${userJson != null}" id="server-user-data" type="application/json" th:utext="${userJson}"></script>
+  <script th:if="${myPostsJson != null}" id="server-my-posts-data" type="application/json" th:utext="${myPostsJson}"></script>
+  <script th:if="${claimsJson != null}" id="server-claims-data" type="application/json" th:utext="${claimsJson}"></script>
   <script>document.addEventListener("DOMContentLoaded",function(){initApp('profile');});</script>
 </body>
 </html>

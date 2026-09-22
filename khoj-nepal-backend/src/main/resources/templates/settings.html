@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
   <script>
@@ -84,7 +84,10 @@
           <div class="settings-group">
             <div class="settings-row" id="kyc-status-row">
               <span data-i18n="kycVerification">KYC Verification</span>
-              <span id="kyc-status-badge"></span>
+              <span id="kyc-status-badge" th:if="${user != null}">
+                <span class="badge" th:style="'background:' + (${user.kycStatus == 'verified'} ? '#10b981' : (${user.kycStatus == 'pending'} ? '#f59e0b' : (${user.kycStatus == 'rejected'} ? '#ef4444' : '#6b7280'))) + ';color:#fff;padding:3px 10px;border-radius:10px;font-size:13px'"
+                      th:text="${user.kycStatus != null} ? ${user.kycStatus} : 'none'">none</span>
+              </span>
             </div>
             <a href="kyc.html" class="settings-row"><span data-i18n="kycInfoTitle">Identity & Ownership Verification</span><span class="chevron">�</span></a>
             <a href="help.html#kyc-help" class="settings-row"><span data-i18n="kycPrivacyInfo">KYC Privacy Information</span><span class="chevron">�</span></a>
@@ -113,6 +116,7 @@
   <script defer src="/js/theme.js"></script>
   <script defer src="/js/auth.js"></script>
   <script defer src="/js/app.js"></script>
+  <script th:if="${userJson != null}" id="server-user-data" type="application/json" th:utext="${userJson}"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       initApp('settings');

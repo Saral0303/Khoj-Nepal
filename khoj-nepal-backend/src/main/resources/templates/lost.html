@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
   <script>
@@ -49,6 +49,8 @@
   <script defer src="/js/theme.js"></script>
   <script defer src="/js/auth.js"></script>
   <script defer src="/js/app.js"></script>
+  <script th:if="${userJson != null}" id="server-user-data" type="application/json" th:utext="${userJson}"></script>
+  <script th:if="${postsJson != null}" id="server-posts-data" type="application/json" th:utext="${postsJson}"></script>
   <script>document.addEventListener('DOMContentLoaded', function() { initApp('lost'); document.getElementById('lost-page-icon').innerHTML = iconLost(); });</script>
 </body>
 </html>

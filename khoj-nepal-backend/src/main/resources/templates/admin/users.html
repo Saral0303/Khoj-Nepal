@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
   <script>
@@ -37,7 +37,19 @@
       <div class="admin-table-card">
         <table class="admin-table">
           <thead><tr><th data-i18n="fullName">Name</th><th data-i18n="username">Username</th><th data-i18n="emailAddress">Email</th><th data-i18n="tableLocation">Location</th><th data-i18n="tableRole">Role</th><th data-i18n="tableKyc">KYC</th></tr></thead>
-          <tbody id="admin-users-body"></tbody>
+          <tbody id="admin-users-body">
+            <tr th:each="u : ${users}">
+              <td th:text="${u.fullName}">Name</td>
+              <td th:text="${u.username}">Username</td>
+              <td th:text="${u.email}">Email</td>
+              <td th:text="${u.district}">Location</td>
+              <td th:text="${u.role}">Role</td>
+              <td th:text="${u.kycStatus}">KYC</td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(users)}">
+              <td colspan="6" class="empty-state">No users found.</td>
+            </tr>
+          </tbody>
         </table>
       </div>
     </main>
@@ -47,6 +59,8 @@
   <script defer src="/js/theme.js"></script>
   <script defer src="/js/auth.js"></script>
   <script defer src="/js/admin.js"></script>
+  <script th:if="${userJson != null}" id="server-user-data" type="application/json" th:utext="${userJson}"></script>
+  <script th:if="${usersJson != null}" id="server-users-data" type="application/json" th:utext="${usersJson}"></script>
   <script>document.addEventListener('DOMContentLoaded', function() { renderAdminUsers(); });</script>
 </body>
 </html>

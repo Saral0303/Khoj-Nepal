@@ -36,6 +36,7 @@
     </main>
   </div>
   <nav class="bottom-nav" id="bottom-nav"></nav>
+  <script th:if="${userJson != null}" id="server-user-data" type="application/json" th:utext="${userJson}"></script>
   <script defer src="/js/mock-data.js"></script>
   <script defer src="/js/language.js"></script>
   <script defer src="/js/theme.js"></script>

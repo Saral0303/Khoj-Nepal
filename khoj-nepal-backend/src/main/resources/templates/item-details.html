@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
   <script>
@@ -34,7 +34,44 @@
     <aside class="sidebar-left" id="sidebar-left"></aside>
     <main class="main-content">
       <div class="detail-page">
-        <div class="detail-card" id="item-detail-content"></div>
+        <div class="detail-card" id="item-detail-content" th:if="${post != null}">
+          <div class="post-header">
+            <div class="post-avatar" th:text="${post.userAvatar}">KN</div>
+            <div class="post-meta">
+              <div class="post-user" th:text="${post.userName}">User</div>
+              <div class="post-date" th:text="${post.date}">Date</div>
+            </div>
+            <span class="type-badge" th:classappend="${post.type == 'lost'} ? 'type-lost' : 'type-found'" th:text="${post.type}">lost</span>
+          </div>
+          <h2 class="post-title" th:text="${post.title}">Title</h2>
+          <p class="post-desc" th:text="${post.description}">Description</p>
+          <div class="detail-info">
+            <div class="detail-row"><strong>Location:</strong> <span th:text="${post.location}">Location</span></div>
+            <div class="detail-row" th:if="${post.category}"><strong>Category:</strong> <span th:text="${post.category}">Category</span></div>
+            <div class="detail-row" th:if="${post.subcategory}"><strong>Subcategory:</strong> <span th:text="${post.subcategory}">Subcategory</span></div>
+            <div class="detail-row"><strong>Status:</strong> <span th:text="${post.status}">Status</span></div>
+          </div>
+          <div th:if="${post.image}" style="margin-top:16px">
+            <img th:src="${post.image}" th:alt="${post.title}" style="max-width:100%;border-radius:8px">
+          </div>
+          <div th:if="${user != null and user.role == 'admin'}" style="margin-top:24px">
+            <h3>Claims on this Post</h3>
+            <div th:if="${#lists.isEmpty(claims)}" class="empty-state">
+              <p>No claims yet.</p>
+            </div>
+            <div th:unless="${#lists.isEmpty(claims)}">
+              <div class="claim-item" th:each="claim : ${claims}">
+                <span th:text="${claim.claimantName}">Claimant</span> - <span th:text="${claim.status}">Status</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="detail-card" th:if="${post == null}">
+          <div class="empty-state">
+            <h3>Post not found</h3>
+            <p>The requested post does not exist or is not available.</p>
+          </div>
+        </div>
       </div>
     </main>
     <aside class="sidebar-right" id="sidebar-right"></aside>
@@ -45,6 +82,7 @@
   <script defer src="/js/theme.js"></script>
   <script defer src="/js/auth.js"></script>
   <script defer src="/js/app.js"></script>
+  <script th:if="${userJson != null}" id="server-user-data" type="application/json" th:utext="${userJson}"></script>
   <script>document.addEventListener("DOMContentLoaded",function(){initApp('item-details');});</script>
 </body>
 </html>

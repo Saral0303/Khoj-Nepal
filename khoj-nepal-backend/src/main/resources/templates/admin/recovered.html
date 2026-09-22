@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
   <script>
@@ -37,7 +37,17 @@
       <div class="admin-table-card">
         <table class="admin-table">
           <thead><tr><th data-i18n="tableItem">Item</th><th data-i18n="tableStatus">Status</th><th data-i18n="tableDelivered">Delivered</th><th data-i18n="tableRetention">Retention</th></tr></thead>
-          <tbody id="admin-recovered-body"></tbody>
+          <tbody id="admin-recovered-body">
+            <tr th:each="post : ${recoveredPosts}">
+              <td th:text="${post.title}">Item</td>
+              <td th:text="${post.status}">Status</td>
+              <td th:text="${post.deliveredDate}">Delivered</td>
+              <td th:text="${post.retentionDaysLeft != null} ? ${post.retentionDaysLeft} + ' days left' : ''">Retention</td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(recoveredPosts)}">
+              <td colspan="4" class="empty-state">No recovered items found.</td>
+            </tr>
+          </tbody>
         </table>
       </div>
       <p class="form-note mt-16" data-i18n="trustRetention">?? Recovered records are retained temporarily for investigation.</p>
@@ -48,21 +58,10 @@
   <script defer src="/js/theme.js"></script>
   <script defer src="/js/auth.js"></script>
   <script defer src="/js/admin.js"></script>
+  <script th:if="${userJson != null}" id="server-user-data" type="application/json" th:utext="${userJson}"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
-      if (!initAdminPage('recovered.html')) { /* redirected */ }
-      else {
-        const userRec = (typeof getAllUserPosts === 'function' ? getAllUserPosts() : [])
-          .filter(p => p.status === 'delivered' || p.status === 'owner_found');
-        const recovered = [...userRec, ...MOCK_POSTS.filter(p => p.status === 'delivered' || p.status === 'owner_found')];
-        document.getElementById('admin-recovered-body').innerHTML = recovered.map(p => `
-          <tr>
-            <td>${p.title}</td>
-            <td>? ${p.status}</td>
-            <td>${p.deliveredDate || ''}</td>
-            <td>${p.retentionDaysLeft != null ? p.retentionDaysLeft + ' days left' : ''}</td>
-          </tr>`).join('') || `<tr><td colspan="4" class="empty-state" data-i18n="emptyRecovered">${typeof t === 'function' ? t('emptyRecovered') : 'No recovered items found.'}</td></tr>`;
-      }
+      if (typeof initAdminPage === 'function') { initAdminPage('recovered.html'); }
     });
   </script>
 </body>

@@ -44,7 +44,7 @@
           </div>
           <div class="form-group">
             <label data-i18n="infoMessage">Short message</label>
-            <textarea class="form-textarea" required placeholder="Share useful details…"></textarea>
+            <textarea class="form-textarea" required placeholder="Share useful detailsï¿½"></textarea>
           </div>
           <p class="form-note" data-i18n="trustAdmin">??? Claims are reviewed by authorized administrators.</p>
           <button type="submit" class="btn btn-primary btn-block" data-i18n="infoSubmit">Submit Information</button>
@@ -54,6 +54,7 @@
     </main>
   </div>
   <nav class="bottom-nav" id="bottom-nav"></nav>
+  <script th:if="${userJson != null}" id="server-user-data" type="application/json" th:utext="${userJson}"></script>
   <script defer src="/js/mock-data.js"></script>
   <script defer src="/js/language.js"></script>
   <script defer src="/js/theme.js"></script>

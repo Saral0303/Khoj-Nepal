@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
   <script>
@@ -41,7 +41,19 @@
             <thead>
               <tr><th data-i18n="tableItem">Item</th><th data-i18n="claimantInfo">Claimant</th><th data-i18n="tableStatus">Status</th><th data-i18n="tableKyc">KYC</th><th data-i18n="tableSubmitted">Submitted</th><th data-i18n="tableAction">Action</th></tr>
             </thead>
-            <tbody id="admin-claims-body"></tbody>
+            <tbody id="admin-claims-body">
+              <tr th:each="claim : ${claims}">
+                <td th:text="${claim.itemTitle}">Item</td>
+                <td th:text="${claim.claimantName}">Claimant</td>
+                <td th:text="${claim.status}">Status</td>
+                <td th:text="${claim.kycVerified} ? 'Verified' : 'Pending'">KYC</td>
+                <td th:text="${claim.submittedDate}">Submitted</td>
+                <td><a th:href="@{/admin/claims}" class="btn btn-sm btn-primary" data-i18n="review">Review</a></td>
+              </tr>
+              <tr th:if="${#lists.isEmpty(claims)}">
+                <td colspan="6" class="empty-state">No claims found.</td>
+              </tr>
+            </tbody>
           </table>
         </div>
       </div>
@@ -57,6 +69,8 @@
   <script defer src="/js/auth.js"></script>
   <script defer src="/js/app.js"></script>
   <script defer src="/js/admin.js"></script>
+  <script th:if="${userJson != null}" id="server-user-data" type="application/json" th:utext="${userJson}"></script>
+  <script th:if="${adminClaimsJson != null}" id="server-admin-claims-data" type="application/json" th:utext="${adminClaimsJson}"></script>
   <script>document.addEventListener('DOMContentLoaded', function() { renderAdminClaimsList(); });</script>
 </body>
 </html>

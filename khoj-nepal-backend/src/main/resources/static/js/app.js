@@ -767,13 +767,11 @@ function renderNotificationItemsHtml(limit) {
 
 function renderNotificationsMenu(activePage) {
   const base = getBasePath();
-  const unread = getMyNotifications().filter(n => !n.read).length;
-  const badge = unread > 0 ? `<span class="nav-badge">${unread > 9 ? '9+' : unread}</span>` : '';
   return `
     <div class="notif-menu-wrap">
       <button type="button" class="nav-icon-btn ${activePage === 'notifications' ? 'active' : ''}" id="notif-menu-toggle"
         title="${t('notifications')}" aria-label="${t('notifications')}" aria-expanded="false" aria-haspopup="true">
-        ${iconBell()}${badge}
+        ${iconBell()}<span class="nav-badge" id="notif-badge" hidden></span>
       </button>
       <div class="notif-menu" id="notif-menu" role="dialog" aria-label="${t('notifications')}" hidden>
         <div class="notif-menu-card">
@@ -785,13 +783,29 @@ function renderNotificationsMenu(activePage) {
             <button type="button" class="notif-tab active" data-notif-filter="all" data-i18n="all">${t('all')}</button>
             <button type="button" class="notif-tab" data-notif-filter="unread" data-i18n="unreadOnly">${t('unreadOnly')}</button>
           </div>
-          <div class="notif-menu-list" id="notif-menu-list">${renderNotificationItemsHtml(8)}</div>
+          <div class="notif-menu-list" id="notif-menu-list"></div>
           <div class="notif-menu-footer">
             <a href="${base}notifications.html" class="notif-see-all" data-i18n="seeAllNotifications">${t('seeAllNotifications')}</a>
           </div>
         </div>
       </div>
     </div>`;
+}
+
+function lazyLoadNotifications() {
+  try {
+    var notifs = getMyNotifications();
+    var unread = notifs.filter(function(n) { return !n.read; }).length;
+    var badge = document.getElementById('notif-badge');
+    if (badge) {
+      if (unread > 0) {
+        badge.textContent = unread > 9 ? '9+' : String(unread);
+        badge.hidden = false;
+      } else {
+        badge.hidden = true;
+      }
+    }
+  } catch(e) {}
 }
 
 function refreshNotificationsMenuList(filter) {
@@ -2018,6 +2032,18 @@ function initHomeLoginGreeting() {
 function renderNotifications() {
   const container = document.getElementById('notifications-list');
   if (!container) return;
+  if (container.querySelector('.notification-item') || container.querySelector('.empty-state')) {
+    var existingMarkBtn = document.getElementById('mark-all-read');
+    if (existingMarkBtn && !existingMarkBtn.dataset.bound) {
+      existingMarkBtn.dataset.bound = '1';
+      existingMarkBtn.addEventListener('click', function() {
+        markAllMyNotificationsRead();
+        container.innerHTML = '<div class="empty-state"><p>No notifications.</p></div>';
+        document.querySelector('#notif-menu-toggle .nav-badge')?.remove();
+      });
+    }
+    return;
+  }
   const items = getMyNotifications();
   const markBtn = document.getElementById('mark-all-read');
   if (markBtn && !markBtn.dataset.bound) {
@@ -2111,9 +2137,9 @@ function claimStatusI18nKey(status) {
 
 function renderActivity() {
   renderMyHistorySections();
-
   const list = document.getElementById('activity-list');
   if (!list) return;
+  if (list.querySelector('.activity-item') || list.querySelector('.empty-state')) return;
   const items = getMyActivity();
   if (!items.length) {
     list.innerHTML = renderEmptyState('noActivityYet', 'noActivityHint', '📋');
@@ -2130,11 +2156,12 @@ function renderActivity() {
 }
 
 function renderItemDetails() {
+  const container = document.getElementById('item-detail-content');
+  if (container && (container.querySelector('.detail-info') || container.querySelector('.empty-state'))) return;
   const id = new URLSearchParams(window.location.search).get('id');
   const post = getPostById(id)
     || (typeof getMyPostById === 'function' ? getMyPostById(id) : null)
     || (typeof getAllUserPosts === 'function' ? getAllUserPosts().find(p => String(p.id) === String(id)) : null);
-  const container = document.getElementById('item-detail-content');
   if (!container) return;
   if (!post) {
     container.innerHTML = renderEmptyState('noPosts');
@@ -2697,6 +2724,7 @@ function initApp(page) {
       initLangMenu();
       initUtilityChrome();
       initFilters();
+      setTimeout(lazyLoadNotifications, 100);
     }
   }
 

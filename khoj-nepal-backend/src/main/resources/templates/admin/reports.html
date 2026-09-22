@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
   <script>
@@ -34,24 +34,27 @@
     <main class="admin-main">
       <div class="admin-mobile-nav" id="admin-mobile-nav"></div>
       <div class="admin-header"><h1 data-i18n="adminReports">Reports</h1></div>
-      <div class="admin-stats">
-        <div class="admin-stat-card"><div class="count" id="r-lost">0</div><div class="label" data-i18n="adminLostItems">Lost Items</div></div>
-        <div class="admin-stat-card"><div class="count" id="r-found">0</div><div class="label" data-i18n="adminFoundItems">Found Items</div></div>
-        <div class="admin-stat-card"><div class="count" id="r-delivered">0</div><div class="label" data-i18n="adminRecovered">Recovered</div></div>
-        <div class="admin-stat-card"><div class="count" id="r-suspicious">0</div><div class="label" data-i18n="adminSuspicious">Suspicious</div></div>
-      </div>
-      <div class="admin-table-card">
-        <p class="form-note" data-i18n="adminReportsDemoNote">Frontend summary only � live reports will come from the Java backend later.</p>
-      </div>
       <div class="admin-table-card">
         <h3 data-i18n="adminOpenReports">Open Reviews</h3>
         <table class="admin-table">
           <thead>
             <tr>
-              <th data-i18n="tableReportId">ID</th><th data-i18n="tableType">Type</th><th data-i18n="tableRelated">Related</th><th data-i18n="tableUser">User</th><th data-i18n="tableDate">Date</th><th data-i18n="tableStatus">Status</th><th></th>
+              <th data-i18n="tableReportId">ID</th><th data-i18n="tableType">Type</th><th data-i18n="tableRelated">Related</th><th data-i18n="tableUser">User</th><th data-i18n="tableDate">Date</th><th data-i18n="tableStatus">Status</th>
             </tr>
           </thead>
-          <tbody id="admin-reports-body"></tbody>
+          <tbody id="admin-reports-body">
+            <tr th:each="report : ${reports}">
+              <td th:text="${report.id}">ID</td>
+              <td th:text="${report.targetType}">Type</td>
+              <td th:text="${report.targetId}">Related</td>
+              <td th:text="${report.reporterId}">User</td>
+              <td th:text="${report.createdAt}">Date</td>
+              <td th:text="${report.status}">Status</td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(reports)}">
+              <td colspan="6" class="empty-state">No reports found.</td>
+            </tr>
+          </tbody>
         </table>
       </div>
     </main>
@@ -61,6 +64,8 @@
   <script defer src="/js/theme.js"></script>
   <script defer src="/js/auth.js"></script>
   <script defer src="/js/admin.js"></script>
+  <script th:if="${userJson != null}" id="server-user-data" type="application/json" th:utext="${userJson}"></script>
+  <script th:if="${adminClaimsJson != null}" id="server-admin-claims-data" type="application/json" th:utext="${adminClaimsJson}"></script>
   <script>document.addEventListener('DOMContentLoaded', function() { renderAdminReportsDeep(); });</script>
 </body>
 </html>

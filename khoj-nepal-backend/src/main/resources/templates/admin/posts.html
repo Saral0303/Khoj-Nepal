@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
   <script>
@@ -39,7 +39,20 @@
         <div class="admin-table-card">
           <table class="admin-table">
             <thead><tr><th data-i18n="tableItem">Item</th><th data-i18n="tableType">Type</th><th data-i18n="tableCategory">Category</th><th data-i18n="tableUser">User</th><th data-i18n="tableLocation">Location</th><th data-i18n="tableDate">Date</th><th data-i18n="tableAction">Action</th></tr></thead>
-            <tbody id="admin-posts-body"></tbody>
+            <tbody id="admin-posts-body">
+              <tr th:each="post : ${posts}">
+                <td th:text="${post.title}">Title</td>
+                <td th:text="${post.type}">Type</td>
+                <td th:text="${post.category}">Category</td>
+                <td th:text="${post.userName}">User</td>
+                <td th:text="${post.location}">Location</td>
+                <td th:text="${post.date}">Date</td>
+                <td><a th:href="@{/admin/post-detail(id=${post.id})}" class="btn btn-sm btn-primary" data-i18n="review">Review</a></td>
+              </tr>
+              <tr th:if="${#lists.isEmpty(posts)}">
+                <td colspan="7" class="empty-state">No posts found.</td>
+              </tr>
+            </tbody>
           </table>
         </div>
       </div>
@@ -52,6 +65,8 @@
   <script defer src="/js/theme.js"></script>
   <script defer src="/js/auth.js"></script>
   <script defer src="/js/admin.js"></script>
+  <script th:if="${userJson != null}" id="server-user-data" type="application/json" th:utext="${userJson}"></script>
+  <script th:if="${usersJson != null}" id="server-users-data" type="application/json" th:utext="${usersJson}"></script>
   <script>document.addEventListener('DOMContentLoaded', function() { renderAdminPosts(); });</script>
 </body>
 </html>

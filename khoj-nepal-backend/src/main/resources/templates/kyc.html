@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
   <script>
@@ -38,7 +38,7 @@
         <p class="form-note" data-i18n="kycVerificationLead">Verify your identity to enable claiming found items.</p>
       </div>
 
-      <div id="kyc-not-logged-in" class="post-form-container" hidden>
+      <div id="kyc-not-logged-in" class="post-form-container" th:if="${user == null}">
         <div class="empty-state">
           <div class="empty-icon">??</div>
           <h3 data-i18n="loginRequired">Login Required</h3>
@@ -47,13 +47,31 @@
         </div>
       </div>
 
-      <div id="kyc-status-section" class="post-form-container" hidden>
-        <div id="kyc-status-box"></div>
+      <div id="kyc-status-section" class="post-form-container" th:if="${user != null and user.kycStatus != null and user.kycStatus != 'none'}">
+        <div id="kyc-status-box">
+          <div class="empty-state" th:if="${user.kycStatus == 'pending'}">
+            <div class="empty-icon">?</div>
+            <h3 data-i18n="kycPendingTitle">KYC Under Review</h3>
+            <p class="empty-hint" data-i18n="kycPendingHint">Your KYC documents have been submitted and are being reviewed by the Admin Office. You will be notified once verified.</p>
+          </div>
+          <div class="empty-state" th:if="${user.kycStatus == 'verified'}">
+            <div class="empty-icon">?</div>
+            <h3 data-i18n="kycVerifiedTitle">KYC Verified</h3>
+            <p class="empty-hint" data-i18n="kycVerifiedHint">Your identity has been verified. You can now claim found items.</p>
+            <a href="found.html" class="btn btn-primary mt-16" data-i18n="browseFoundItems">Browse Found Items</a>
+          </div>
+          <div class="empty-state" th:if="${user.kycStatus == 'rejected'}">
+            <div class="empty-icon">?</div>
+            <h3 data-i18n="kycRejectedTitle">KYC Rejected</h3>
+            <p class="empty-hint" data-i18n="kycRejectedHint">Your KYC submission was not approved. Please review your documents and resubmit with clear, valid Citizenship/NID images.</p>
+            <button type="button" class="btn btn-primary mt-16" id="kyc-resubmit-btn" data-i18n="resubmitKyc">Resubmit KYC</button>
+          </div>
+        </div>
       </div>
 
-      <div id="kyc-form-section" class="post-form-container" hidden>
+      <div id="kyc-form-section" class="post-form-container" th:if="${user != null and (user.kycStatus == null or user.kycStatus == 'none' or user.kycStatus == 'rejected')}">
         <div class="privacy-notice" data-i18n="kycFormIntro">
-          Upload your Citizenship Card or National ID (NID) � front and back. Documents are kept private and only reviewed by Admin Office.
+          Upload your Citizenship Card or National ID (NID) - front and back. Documents are kept private and only reviewed by Admin Office.
         </div>
         <div class="detail-info mt-16">
           <div class="detail-row">1. <span data-i18n="kycFormStep1">Take a clear photo of your Citizenship/NID front.</span></div>
@@ -76,32 +94,6 @@
         <button type="button" class="btn btn-primary btn-block mt-16" id="kyc-submit-btn" data-i18n="submitKyc">Submit KYC Documents</button>
       </div>
 
-      <div id="kyc-pending-section" class="post-form-container" hidden>
-        <div class="empty-state">
-          <div class="empty-icon">?</div>
-          <h3 data-i18n="kycPendingTitle">KYC Under Review</h3>
-          <p class="empty-hint" data-i18n="kycPendingHint">Your KYC documents have been submitted and are being reviewed by the Admin Office. You will be notified once verified.</p>
-        </div>
-      </div>
-
-      <div id="kyc-verified-section" class="post-form-container" hidden>
-        <div class="empty-state">
-          <div class="empty-icon">?</div>
-          <h3 data-i18n="kycVerifiedTitle">KYC Verified</h3>
-          <p class="empty-hint" data-i18n="kycVerifiedHint">Your identity has been verified. You can now claim found items.</p>
-          <a href="found.html" class="btn btn-primary mt-16" data-i18n="browseFoundItems">Browse Found Items</a>
-        </div>
-      </div>
-
-      <div id="kyc-rejected-section" class="post-form-container" hidden>
-        <div class="empty-state">
-          <div class="empty-icon">?</div>
-          <h3 data-i18n="kycRejectedTitle">KYC Rejected</h3>
-          <p class="empty-hint" data-i18n="kycRejectedHint">Your KYC submission was not approved. Please review your documents and resubmit with clear, valid Citizenship/NID images.</p>
-          <button type="button" class="btn btn-primary mt-16" id="kyc-resubmit-btn" data-i18n="resubmitKyc">Resubmit KYC</button>
-        </div>
-      </div>
-
       <a href="settings.html" class="btn btn-ghost btn-block mt-16" data-i18n="backToSettings">Back to Settings</a>
     </main>
     <aside class="sidebar-right" id="sidebar-right"></aside>
@@ -112,6 +104,7 @@
   <script defer src="/js/theme.js"></script>
   <script defer src="/js/auth.js"></script>
   <script defer src="/js/app.js"></script>
+  <script th:if="${userJson != null}" id="server-user-data" type="application/json" th:utext="${userJson}"></script>
   <script>document.addEventListener("DOMContentLoaded",function(){initApp('kyc');});</script>
   <script>document.addEventListener('DOMContentLoaded', function() { initKycPage(); });</script>
 </body>

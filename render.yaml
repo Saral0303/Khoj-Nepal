@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: khoj-nepal
+    runtime: java
+    buildCommand: cd khoj-nepal-backend && ./mvnw clean package -DskipTests
+    startCommand: cd khoj-nepal-backend && java -jar target/*.jar
+    envVars:
+      - key: JAVA_VERSION
+        value: "21"
+      - key: SPRING_PROFILES_ACTIVE
+        value: "production"
+      - key: SERVER_PORT
+        value: "8080"

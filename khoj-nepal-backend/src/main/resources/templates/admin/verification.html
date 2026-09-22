@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
   <script>
@@ -40,15 +40,36 @@
         <p class="form-note" data-i18n="kycVerificationLead">Review user-submitted KYC documents and approve or reject.</p>
         <table class="admin-table">
           <thead><tr><th data-i18n="tableUser">User</th><th data-i18n="username">Username</th><th data-i18n="tableSubmitted">Submitted</th><th data-i18n="tableStatus">Status</th><th data-i18n="tableAction">Action</th></tr></thead>
-          <tbody id="admin-kyc-users-body"></tbody>
+          <tbody id="admin-kyc-users-body">
+            <tr th:each="u : ${kycPendingUsers}">
+              <td th:text="${u.fullName}">User</td>
+              <td th:text="${u.username}">Username</td>
+              <td th:text="${u.kycSubmittedAt}">Submitted</td>
+              <td th:text="${u.kycStatus}">Status</td>
+              <td><a href="#" class="btn btn-sm btn-primary" data-i18n="review">Review</a></td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(kycPendingUsers)}">
+              <td colspan="5" class="empty-state">No pending KYC submissions.</td>
+            </tr>
+          </tbody>
         </table>
       </div>
 
       <div class="admin-table-card" style="margin-top:20px">
-        <h3 data-i18n="allUsersKyc">All Users � KYC Status</h3>
+        <h3 data-i18n="allUsersKyc">All Users - KYC Status</h3>
         <table class="admin-table">
           <thead><tr><th data-i18n="tableUser">User</th><th data-i18n="username">Username</th><th data-i18n="tableKyc">KYC Status</th><th data-i18n="tableAction">Action</th></tr></thead>
-          <tbody id="admin-all-users-kyc-body"></tbody>
+          <tbody id="admin-all-users-kyc-body">
+            <tr th:each="u : ${allUsers}">
+              <td th:text="${u.fullName}">User</td>
+              <td th:text="${u.username}">Username</td>
+              <td th:text="${u.kycStatus}">KYC Status</td>
+              <td><a href="#" class="btn btn-sm btn-ghost" data-i18n="viewDetails">View</a></td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(allUsers)}">
+              <td colspan="4" class="empty-state">No users found.</td>
+            </tr>
+          </tbody>
         </table>
       </div>
 
@@ -66,6 +87,8 @@
   <script defer src="/js/theme.js"></script>
   <script defer src="/js/auth.js"></script>
   <script defer src="/js/admin.js"></script>
+  <script th:if="${userJson != null}" id="server-user-data" type="application/json" th:utext="${userJson}"></script>
+  <script th:if="${usersJson != null}" id="server-users-data" type="application/json" th:utext="${usersJson}"></script>
   <script>document.addEventListener('DOMContentLoaded', function() { renderAdminKycVerification(); });</script>
 </body>
 </html>
