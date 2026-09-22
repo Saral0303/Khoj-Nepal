@@ -5,7 +5,6 @@ import io.virinchi.khojnepal.Repository.*;
 import io.virinchi.khojnepal.Service.NotificationService;
 import io.virinchi.khojnepal.Service.UserService;
 import jakarta.servlet.http.HttpSession;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.*;
 
 @Controller
-@RequiredArgsConstructor
 public class UserController {
 
     private final UserRepository userRepo;
@@ -26,7 +24,19 @@ public class UserController {
     private final UserService userService;
     private final NotificationService notificationService;
 
- 
+    public UserController(UserRepository userRepo, PostRepository postRepo,
+                          NotificationRepository notificationRepo, ActivityRepository activityRepo,
+                          ClaimRepository claimRepo, UserService userService,
+                          NotificationService notificationService) {
+        this.userRepo = userRepo;
+        this.postRepo = postRepo;
+        this.notificationRepo = notificationRepo;
+        this.activityRepo = activityRepo;
+        this.claimRepo = claimRepo;
+        this.userService = userService;
+        this.notificationService = notificationService;
+    }
+
 
     private UserTbl getUser(HttpSession session) {
         Integer userId = (Integer) session.getAttribute("userId");

@@ -1,7 +1,6 @@
 package io.virinchi.khojnepal.Service;
 
 import io.virinchi.khojnepal.Repository.*;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -9,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-@RequiredArgsConstructor
 public class AdminService {
 
     private final UserRepository uRepo;
@@ -17,6 +15,16 @@ public class AdminService {
     private final ClaimRepository cRepo;
     private final TipRepository tipRepo;
     private final ReportRepository reportRepo;
+
+    public AdminService(UserRepository uRepo, PostRepository pRepo,
+                        ClaimRepository cRepo, TipRepository tipRepo,
+                        ReportRepository reportRepo) {
+        this.uRepo = uRepo;
+        this.pRepo = pRepo;
+        this.cRepo = cRepo;
+        this.tipRepo = tipRepo;
+        this.reportRepo = reportRepo;
+    }
 
     public Map<String, Object> getDashboardStats() {
         Map<String, Object> stats = new HashMap<>();

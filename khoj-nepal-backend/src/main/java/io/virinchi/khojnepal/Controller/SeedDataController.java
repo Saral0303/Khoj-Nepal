@@ -5,7 +5,6 @@ import io.virinchi.khojnepal.Model.UserTbl;
 import io.virinchi.khojnepal.Repository.PostRepository;
 import io.virinchi.khojnepal.Repository.UserRepository;
 import io.virinchi.khojnepal.Service.TranslationService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
@@ -16,7 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-@RequiredArgsConstructor
 public class SeedDataController {
 
     private static final int TARGET_DUMMY_POSTS = 48;
@@ -24,6 +22,13 @@ public class SeedDataController {
     private final UserRepository uRepo;
     private final PostRepository pRepo;
     private final TranslationService translationService;
+
+    public SeedDataController(UserRepository uRepo, PostRepository pRepo,
+                              TranslationService translationService) {
+        this.uRepo = uRepo;
+        this.pRepo = pRepo;
+        this.translationService = translationService;
+    }
 
     @EventListener(ApplicationReadyEvent.class)
     public void seedOnStartup() {

@@ -3,7 +3,6 @@ package io.virinchi.khojnepal.RestAPIController;
 import io.virinchi.khojnepal.Model.UserTbl;
 import io.virinchi.khojnepal.Service.UserService;
 import jakarta.servlet.http.HttpSession;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,12 +10,15 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 @RestController
-@RequiredArgsConstructor
 @CrossOrigin(origins = "*")
 @RequestMapping("/api/users")
 public class UserRestController {
 
     private final UserService userService;
+
+    public UserRestController(UserService userService) {
+        this.userService = userService;
+    }
 
     @GetMapping("/me")
     public ResponseEntity<?> me(HttpSession session) {

@@ -1,10 +1,8 @@
 package io.virinchi.khojnepal.Model;
 
 import jakarta.persistence.*;
-import lombok.Data;
 
 @Entity
-@Data
 @Table(name = "tip_tbl")
 public class TipTbl {
 
@@ -36,4 +34,23 @@ public class TipTbl {
 
     private String status;
     private String createdAt;
+
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
+    public int getPostId() { return postId; }
+    public void setPostId(int postId) { this.postId = postId; }
+    public int getUserId() { return userId; }
+    public void setUserId(int userId) { this.userId = userId; }
+    public PostTbl getPost() { return post; }
+    public void setPost(PostTbl post) { this.post = post; }
+    public UserTbl getUser() { return user; }
+    public void setUser(UserTbl user) { this.user = user; }
+    public String getInfoType() { return infoType; }
+    public void setInfoType(String infoType) { this.infoType = infoType; }
+    public String getMessage() { return message; }
+    public void setMessage(String message) { this.message = message; }
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
+    public String getCreatedAt() { return createdAt; }
+    public void setCreatedAt(String createdAt) { this.createdAt = createdAt; }
 }

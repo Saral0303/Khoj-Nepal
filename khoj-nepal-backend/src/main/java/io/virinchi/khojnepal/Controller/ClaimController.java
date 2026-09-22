@@ -9,7 +9,6 @@ import io.virinchi.khojnepal.Repository.UserRepository;
 import io.virinchi.khojnepal.Service.ClaimService;
 import io.virinchi.khojnepal.Service.UserService;
 import jakarta.servlet.http.HttpSession;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -21,7 +20,6 @@ import java.util.List;
 import java.util.Map;
 
 @Controller
-@RequiredArgsConstructor
 public class ClaimController {
 
     private final UserRepository userRepo;
@@ -29,6 +27,16 @@ public class ClaimController {
     private final ClaimRepository claimRepo;
     private final ClaimService claimService;
     private final UserService userService;
+
+    public ClaimController(UserRepository userRepo, PostRepository postRepo,
+                           ClaimRepository claimRepo, ClaimService claimService,
+                           UserService userService) {
+        this.userRepo = userRepo;
+        this.postRepo = postRepo;
+        this.claimRepo = claimRepo;
+        this.claimService = claimService;
+        this.userService = userService;
+    }
 
     /* ──────── helpers ──────── */
 

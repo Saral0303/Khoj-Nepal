@@ -4,7 +4,6 @@ import io.virinchi.khojnepal.Model.UserTbl;
 import io.virinchi.khojnepal.Service.ReportService;
 import io.virinchi.khojnepal.Service.UserService;
 import jakarta.servlet.http.HttpSession;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,13 +11,17 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 @RestController
-@RequiredArgsConstructor
 @CrossOrigin(origins = "*")
 @RequestMapping("/api")
 public class TipReportRestController {
 
     private final ReportService reportService;
     private final UserService userService;
+
+    public TipReportRestController(ReportService reportService, UserService userService) {
+        this.reportService = reportService;
+        this.userService = userService;
+    }
 
     @PostMapping("/posts/{postId}/tips")
     public ResponseEntity<?> createTip(@PathVariable int postId, @RequestBody Map<String, String> body, HttpSession session) {

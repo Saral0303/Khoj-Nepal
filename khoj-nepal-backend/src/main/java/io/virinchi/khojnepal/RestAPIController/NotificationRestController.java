@@ -4,7 +4,6 @@ import io.virinchi.khojnepal.Model.UserTbl;
 import io.virinchi.khojnepal.Service.NotificationService;
 import io.virinchi.khojnepal.Service.UserService;
 import jakarta.servlet.http.HttpSession;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,13 +11,17 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 @RestController
-@RequiredArgsConstructor
 @CrossOrigin(origins = "*")
 @RequestMapping("/api")
 public class NotificationRestController {
 
     private final NotificationService notificationService;
     private final UserService userService;
+
+    public NotificationRestController(NotificationService notificationService, UserService userService) {
+        this.notificationService = notificationService;
+        this.userService = userService;
+    }
 
     @GetMapping("/notifications")
     public ResponseEntity<?> notifications(

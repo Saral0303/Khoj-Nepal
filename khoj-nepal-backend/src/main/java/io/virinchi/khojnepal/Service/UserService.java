@@ -2,7 +2,6 @@ package io.virinchi.khojnepal.Service;
 
 import io.virinchi.khojnepal.Model.UserTbl;
 import io.virinchi.khojnepal.Repository.UserRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
@@ -12,11 +11,15 @@ import java.util.Map;
 import java.util.Optional;
 
 @Service
-@RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository uRepo;
     private final NotificationService notificationService;
+
+    public UserService(UserRepository uRepo, NotificationService notificationService) {
+        this.uRepo = uRepo;
+        this.notificationService = notificationService;
+    }
 
     public UserTbl register(String fullName, String username, String email,
                             String mobile, String password, String dateOfBirth,

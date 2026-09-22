@@ -7,20 +7,26 @@ import io.virinchi.khojnepal.Repository.PostRepository;
 import io.virinchi.khojnepal.Repository.ReportRepository;
 import io.virinchi.khojnepal.Repository.TipRepository;
 import io.virinchi.khojnepal.Repository.UserRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.Optional;
 
 @Service
-@RequiredArgsConstructor
 public class ReportService {
 
     private final TipRepository tipRepo;
     private final ReportRepository reportRepo;
     private final PostRepository postRepo;
     private final UserRepository userRepo;
+
+    public ReportService(TipRepository tipRepo, ReportRepository reportRepo,
+                         PostRepository postRepo, UserRepository userRepo) {
+        this.tipRepo = tipRepo;
+        this.reportRepo = reportRepo;
+        this.postRepo = postRepo;
+        this.userRepo = userRepo;
+    }
 
     public TipTbl createTip(int postId, UserTbl user, String infoType, String message) {
         var post = postRepo.findById(postId);

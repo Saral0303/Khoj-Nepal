@@ -3,7 +3,6 @@ package io.virinchi.khojnepal.Service;
 import io.virinchi.khojnepal.Model.PostTbl;
 import io.virinchi.khojnepal.Model.UserTbl;
 import io.virinchi.khojnepal.Repository.PostRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -17,12 +16,18 @@ import java.util.Locale;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 public class PostService {
 
     private final PostRepository pRepo;
     private final NotificationService notificationService;
     private final TranslationService translationService;
+
+    public PostService(PostRepository pRepo, NotificationService notificationService,
+                       TranslationService translationService) {
+        this.pRepo = pRepo;
+        this.notificationService = notificationService;
+        this.translationService = translationService;
+    }
 
     public Page<PostTbl> getVisiblePosts(Integer userId, String type, String category,
                                          String subcategory, String location,

@@ -1,10 +1,8 @@
 package io.virinchi.khojnepal.Model;
 
 import jakarta.persistence.*;
-import lombok.Data;
 
 @Entity
-@Data
 @Table(name = "activity_tbl")
 public class ActivityTbl {
 
@@ -25,4 +23,21 @@ public class ActivityTbl {
     private String icon;
     private String activityKey;
     private String createdAt;
+
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
+    public int getOwnerId() { return ownerId; }
+    public void setOwnerId(int ownerId) { this.ownerId = ownerId; }
+    public UserTbl getOwner() { return owner; }
+    public void setOwner(UserTbl owner) { this.owner = owner; }
+    public String getTimeLabel() { return timeLabel; }
+    public void setTimeLabel(String timeLabel) { this.timeLabel = timeLabel; }
+    public String getTimeNe() { return timeNe; }
+    public void setTimeNe(String timeNe) { this.timeNe = timeNe; }
+    public String getIcon() { return icon; }
+    public void setIcon(String icon) { this.icon = icon; }
+    public String getActivityKey() { return activityKey; }
+    public void setActivityKey(String activityKey) { this.activityKey = activityKey; }
+    public String getCreatedAt() { return createdAt; }
+    public void setCreatedAt(String createdAt) { this.createdAt = createdAt; }
 }

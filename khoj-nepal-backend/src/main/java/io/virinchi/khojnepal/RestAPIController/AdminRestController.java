@@ -12,7 +12,6 @@ import io.virinchi.khojnepal.Service.ClaimService;
 import io.virinchi.khojnepal.Service.PostService;
 import io.virinchi.khojnepal.Service.UserService;
 import jakarta.servlet.http.HttpSession;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -24,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequiredArgsConstructor
 @CrossOrigin(origins = "*")
 @RequestMapping("/api/admin")
 public class AdminRestController {
@@ -38,6 +36,20 @@ public class AdminRestController {
     private final ClaimRepository cRepo;
     private final TipRepository tipRepo;
     private final ReportRepository reportRepo;
+
+    public AdminRestController(AdminService adminService, ClaimService claimService, PostService postService,
+                               UserService userService, UserRepository uRepo, PostRepository pRepo,
+                               ClaimRepository cRepo, TipRepository tipRepo, ReportRepository reportRepo) {
+        this.adminService = adminService;
+        this.claimService = claimService;
+        this.postService = postService;
+        this.userService = userService;
+        this.uRepo = uRepo;
+        this.pRepo = pRepo;
+        this.cRepo = cRepo;
+        this.tipRepo = tipRepo;
+        this.reportRepo = reportRepo;
+    }
 
     @GetMapping("/stats")
     public ResponseEntity<?> stats(HttpSession session) {

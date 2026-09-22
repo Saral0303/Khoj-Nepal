@@ -7,7 +7,6 @@ import io.virinchi.khojnepal.Repository.PostRepository;
 import io.virinchi.khojnepal.Service.ClaimService;
 import io.virinchi.khojnepal.Service.UserService;
 import jakarta.servlet.http.HttpSession;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 @RestController
-@RequiredArgsConstructor
 @CrossOrigin(origins = "*")
 @RequestMapping("/api/claims")
 public class ClaimRestController {
@@ -23,6 +21,12 @@ public class ClaimRestController {
     private final ClaimService claimService;
     private final UserService userService;
     private final PostRepository pRepo;
+
+    public ClaimRestController(ClaimService claimService, UserService userService, PostRepository pRepo) {
+        this.claimService = claimService;
+        this.userService = userService;
+        this.pRepo = pRepo;
+    }
 
     @GetMapping("/mine")
     public ResponseEntity<?> myClaims(

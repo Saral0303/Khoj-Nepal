@@ -6,7 +6,6 @@ import io.virinchi.khojnepal.Model.UserTbl;
 import io.virinchi.khojnepal.Repository.ActivityRepository;
 import io.virinchi.khojnepal.Repository.NotificationRepository;
 import io.virinchi.khojnepal.Repository.UserRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -17,12 +16,18 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
 public class NotificationService {
 
     private final NotificationRepository nRepo;
     private final ActivityRepository aRepo;
     private final UserRepository uRepo;
+
+    public NotificationService(NotificationRepository nRepo, ActivityRepository aRepo,
+                               UserRepository uRepo) {
+        this.nRepo = nRepo;
+        this.aRepo = aRepo;
+        this.uRepo = uRepo;
+    }
 
     public void addNotification(int ownerId, String key, String type, Integer points) {
         NotificationTbl n = new NotificationTbl();

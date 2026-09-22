@@ -4,7 +4,6 @@ import io.virinchi.khojnepal.Model.UserTbl;
 import io.virinchi.khojnepal.Service.OtpService;
 import io.virinchi.khojnepal.Service.UserService;
 import jakarta.servlet.http.HttpSession;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,12 +17,17 @@ import java.time.LocalDate;
 import java.util.Map;
 
 @Controller
-@RequiredArgsConstructor
 public class AuthController {
 
     private final UserService userService;
     private final OtpService otpService;
     private final JavaMailSender jms;
+
+    public AuthController(UserService userService, OtpService otpService, JavaMailSender jms) {
+        this.userService = userService;
+        this.otpService = otpService;
+        this.jms = jms;
+    }
 
     @Value("${spring.mail.username:}")
     private String mailFrom;

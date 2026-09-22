@@ -3,7 +3,6 @@ package io.virinchi.khojnepal.RestAPIController;
 import io.virinchi.khojnepal.Model.UserTbl;
 import io.virinchi.khojnepal.Service.UserService;
 import jakarta.servlet.http.HttpSession;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 @RestController
-@RequiredArgsConstructor
 @CrossOrigin(origins = "*")
 @RequestMapping("/api/auth")
 public class AuthRestController {
@@ -24,6 +22,11 @@ public class AuthRestController {
 
     @Value("${spring.mail.username:}")
     private String mailFrom;
+
+    public AuthRestController(UserService userService, JavaMailSender jms) {
+        this.userService = userService;
+        this.jms = jms;
+    }
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody Map<String, String> body, HttpSession session) {

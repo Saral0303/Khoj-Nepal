@@ -1,6 +1,7 @@
 package io.virinchi.khojnepal.Controller;
 
 import io.virinchi.khojnepal.Model.ClaimTbl;
+
 import io.virinchi.khojnepal.Model.PostTbl;
 import io.virinchi.khojnepal.Model.UserTbl;
 import io.virinchi.khojnepal.Repository.*;
@@ -9,7 +10,6 @@ import io.virinchi.khojnepal.Service.ClaimService;
 import io.virinchi.khojnepal.Service.PostService;
 import io.virinchi.khojnepal.Service.UserService;
 import jakarta.servlet.http.HttpSession;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 
 @Controller
-@RequiredArgsConstructor
 public class AdminController {
 
     private final AdminService adminService;
@@ -36,6 +35,22 @@ public class AdminController {
     private final ClaimRepository claimRepo;
     private final ReportRepository reportRepo;
     private final TipRepository tipRepo;
+
+    public AdminController(AdminService adminService, ClaimService claimService,
+                           PostService postService, UserService userService,
+                           UserRepository userRepo, PostRepository postRepo,
+                           ClaimRepository claimRepo, ReportRepository reportRepo,
+                           TipRepository tipRepo) {
+        this.adminService = adminService;
+        this.claimService = claimService;
+        this.postService = postService;
+        this.userService = userService;
+        this.userRepo = userRepo;
+        this.postRepo = postRepo;
+        this.claimRepo = claimRepo;
+        this.reportRepo = reportRepo;
+        this.tipRepo = tipRepo;
+    }
 
     /* ──────── helpers ──────── */
 

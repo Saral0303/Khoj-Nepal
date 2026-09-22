@@ -10,7 +10,6 @@ import io.virinchi.khojnepal.Service.PostService;
 import io.virinchi.khojnepal.Service.ReportService;
 import io.virinchi.khojnepal.Service.UserService;
 import jakarta.servlet.http.HttpSession;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +28,6 @@ import java.util.Map;
 import java.util.UUID;
 
 @Controller
-@RequiredArgsConstructor
 public class PostController {
 
     private final PostService postService;
@@ -38,6 +36,17 @@ public class PostController {
     private final PostRepository postRepo;
     private final ClaimRepository claimRepo;
     private final ReportService reportService;
+
+    public PostController(PostService postService, UserService userService,
+                          UserRepository userRepo, PostRepository postRepo,
+                          ClaimRepository claimRepo, ReportService reportService) {
+        this.postService = postService;
+        this.userService = userService;
+        this.userRepo = userRepo;
+        this.postRepo = postRepo;
+        this.claimRepo = claimRepo;
+        this.reportService = reportService;
+    }
 
     /* ══════════════════════════════════════════
        Helper methods

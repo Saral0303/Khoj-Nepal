@@ -6,7 +6,6 @@ import io.virinchi.khojnepal.Model.UserTbl;
 import io.virinchi.khojnepal.Repository.ClaimRepository;
 import io.virinchi.khojnepal.Repository.PostRepository;
 import io.virinchi.khojnepal.Repository.UserRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -18,13 +17,20 @@ import java.time.temporal.ChronoUnit;
 import java.util.Map;
 
 @Service
-@RequiredArgsConstructor
 public class ClaimService {
 
     private final ClaimRepository cRepo;
     private final PostRepository pRepo;
     private final UserRepository uRepo;
     private final NotificationService notificationService;
+
+    public ClaimService(ClaimRepository cRepo, PostRepository pRepo,
+                        UserRepository uRepo, NotificationService notificationService) {
+        this.cRepo = cRepo;
+        this.pRepo = pRepo;
+        this.uRepo = uRepo;
+        this.notificationService = notificationService;
+    }
 
     public Page<ClaimTbl> getMyClaims(int userId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id"));
