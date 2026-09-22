@@ -1902,20 +1902,26 @@ function initEditPostForm() {
       showError(t('editPostIncomplete'));
       return;
     }
-    const result = updateMyPost(post.id, {
-      title,
-      titleNe: title,
-      location,
-      locationNe: location,
-      description,
-      descriptionNe: description,
-      category,
-      subcategory,
-      date: dateVal,
-      image,
-      time: 'Just now',
-      timeNe: 'अहिले'
-    });
+    let result;
+    try {
+      result = await updateMyPost(post.id, {
+        title,
+        titleNe: title,
+        location,
+        locationNe: location,
+        description,
+        descriptionNe: description,
+        category,
+        subcategory,
+        date: dateVal,
+        image,
+        time: 'Just now',
+        timeNe: 'अहिले'
+      });
+    } catch (err) {
+      showError(t('editPostFailed'));
+      return;
+    }
     if (!result.ok) {
       showError(result.error || t('editPostFailed'));
       return;
