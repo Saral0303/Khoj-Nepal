@@ -470,7 +470,7 @@ async function sendOtpToEmail(email, purpose) {
     email: String(email || '').trim(),
     purpose: purpose || 'signup'
   });
-  return res.ok;
+  return { ok: res.ok, otp: res.data && res.data.otp ? res.data.otp : null };
 }
 
 async function verifyOtpCode(email, code, purpose) {

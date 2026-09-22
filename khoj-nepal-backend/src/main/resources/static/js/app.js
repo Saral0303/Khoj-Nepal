@@ -2804,12 +2804,18 @@ function initForgotPassword() {
     if (!identifier) { showError(t('enterEmailOrMobile') || 'Enter your email or mobile number.'); return; }
     clearError();
     setButtonLoading(findBtn, true, t('sending') || 'Sending...');
-    sendOtpToEmail(identifier, 'forgot-password').then(function(ok) {
+    sendOtpToEmail(identifier, 'forgot-password').then(function(result) {
       setButtonLoading(findBtn, false);
-      if (!ok) { showError(t('failedToSendCode') || 'Failed to send verification code. Check your email.'); return; }
+      if (!result.ok) { showError(t('failedToSendCode') || 'Failed to send verification code. Check your email.'); return; }
       resetIdentifier = identifier;
       if (step1) step1.style.display = 'none';
       if (otpSection) otpSection.style.display = '';
+      if (result.otp) {
+        var otpInput = document.getElementById('forgot-otp');
+        if (otpInput) otpInput.value = result.otp;
+        var otpHint = document.getElementById('forgot-otp-msg');
+        if (otpHint) otpHint.textContent = (t('yourCodeIs') || 'Your verification code: ') + result.otp;
+      }
     }).catch(function() {
       setButtonLoading(findBtn, false);
       showError(t('failedToSendCode') || 'Failed to send verification code. Try again.');
