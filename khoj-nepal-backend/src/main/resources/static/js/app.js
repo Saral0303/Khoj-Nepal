@@ -2761,6 +2761,101 @@ function initApp(page) {
     if (typeof initHelpPages === 'function') initHelpPages(page);
   }
   if (page === 'home' || page === 'found') renderKycWarningBanner();
+  if (page === 'forgot-password') initForgotPassword();
+}
+
+function initForgotPassword() {
+  var step1 = document.getElementById('forgot-step1');
+  var step2 = document.getElementById('forgot-step2');
+  var otpSection = document.getElementById('forgot-otp-section');
+  var errorBox = document.getElementById('forgot-error');
+  var findBtn = document.getElementById('forgot-find-btn');
+  var verifyBtn = document.getElementById('forgot-verify-otp');
+  var resetBtn = document.getElementById('forgot-reset-btn');
+  var resendBtn = document.getElementById('forgot-resend-otp');
+  var accountMsg = document.getElementById('forgot-account-msg');
+  var identifierInput = document.getElementById('forgot-identifier');
+
+  function showError(msg) {
+    if (!errorBox) return;
+    errorBox.style.display = '';
+    errorBox.textContent = msg;
+  }
+  function clearError() {
+    if (errorBox) { errorBox.style.display = 'none'; errorBox.textContent = ''; }
+  }
+
+  if (!findBtn) return;
+  var resetIdentifier = '';
+
+  findBtn.addEventListener('click', function() {
+    var identifier = (identifierInput.value || '').trim();
+    if (!identifier) { showError(t('enterEmailOrMobile') || 'Enter your email or mobile number.'); return; }
+    clearError();
+    setButtonLoading(findBtn, true, t('sending') || 'Sending...');
+    sendOtpToEmail(identifier, 'forgot-password').then(function(ok) {
+      setButtonLoading(findBtn, false);
+      if (!ok) { showError(t('failedToSendCode') || 'Failed to send verification code. Check your email.'); return; }
+      resetIdentifier = identifier;
+      if (step1) step1.style.display = 'none';
+      if (otpSection) otpSection.style.display = '';
+    }).catch(function() {
+      setButtonLoading(findBtn, false);
+      showError(t('failedToSendCode') || 'Failed to send verification code. Try again.');
+    });
+  });
+
+  if (verifyBtn) {
+    verifyBtn.addEventListener('click', function() {
+      var code = (document.getElementById('forgot-otp') || {}).value || '';
+      code = code.trim();
+      if (!code || code.length !== 6) { showError(t('enterSixDigitCode') || 'Enter the 6-digit verification code.'); return; }
+      clearError();
+      setButtonLoading(verifyBtn, true, t('verifying') || 'Verifying...');
+      verifyOtpCode(resetIdentifier, code, 'forgot-password').then(function(ok) {
+        setButtonLoading(verifyBtn, false);
+        if (!ok) { showError(t('invalidCode') || 'Invalid or expired verification code.'); return; }
+        if (otpSection) otpSection.style.display = 'none';
+        if (step2) step2.style.display = '';
+        if (accountMsg) accountMsg.textContent = (t('enterNewPasswordHint') || 'Enter your new password below.');
+      }).catch(function() {
+        setButtonLoading(verifyBtn, false);
+        showError(t('verificationFailed') || 'Verification failed. Try again.');
+      });
+    });
+  }
+
+  if (resendBtn) {
+    resendBtn.addEventListener('click', function() {
+      if (!resetIdentifier) return;
+      clearError();
+      setButtonLoading(resendBtn, true, t('sending') || 'Sending...');
+      sendOtpToEmail(resetIdentifier, 'forgot-password').then(function() {
+        setButtonLoading(resendBtn, false);
+      }).catch(function() {
+        setButtonLoading(resendBtn, false);
+      });
+    });
+  }
+
+  if (resetBtn) {
+    resetBtn.addEventListener('click', function() {
+      var newPass = (document.getElementById('forgot-new-password') || {}).value || '';
+      var confirmPass = (document.getElementById('forgot-confirm-password') || {}).value || '';
+      if (!newPass || newPass.length < 6) { showError(t('passwordMinLength') || 'Password must be at least 6 characters.'); return; }
+      if (newPass !== confirmPass) { showError(t('passwordsNoMatch') || 'Passwords do not match.'); return; }
+      clearError();
+      setButtonLoading(resetBtn, true, t('resetting') || 'Resetting...');
+      resetPasswordForIdentifierAsync(resetIdentifier, newPass).then(function(result) {
+        setButtonLoading(resetBtn, false);
+        if (!result.ok) { showError(result.error); return; }
+        window.location.href = 'login.html?reset=success';
+      }).catch(function() {
+        setButtonLoading(resetBtn, false);
+        showError(t('resetFailed') || 'Password reset failed. Try again.');
+      });
+    });
+  }
 }
 
 function initKycPage() {
