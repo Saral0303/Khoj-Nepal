@@ -14,4 +14,7 @@ RUN ./mvnw clean package -DskipTests -B
 
 EXPOSE 8080
 
-CMD ["sh", "-c", "java -jar target/*.jar"]
+HEALTHCHECK --interval=30s --timeout=10s --start-period=120s --retries=3 \
+  CMD wget -q --spider http://localhost:8080/ || exit 1
+
+CMD ["sh", "-c", "java $JAVA_OPTS -jar target/*.jar --server.port=$SERVER_PORT"]
